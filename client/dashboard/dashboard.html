@@ -265,10 +265,6 @@
                                 Stop
                             </button>
                         </div>
-                        <button class="mock-scan-btn" id="mockScanBtn" type="button">
-                            <i class="fas fa-wand-magic-sparkles"></i>
-                            Use Demo Scan
-                        </button>
                         <div class="manual-transfer-box">
                             <p class="manual-transfer-title">Or use shared transfer code</p>
                             <div class="manual-transfer-row">
@@ -331,15 +327,6 @@
                         
                         <input type="text" class="manual-code-input" id="manualCodeInput" placeholder="Enter transfer code manually" readonly>
 
-                        <!-- 🔐 Secure share buttons with icons -->
-                        <div class="share-actions" style="display: flex; gap: 8px; margin-top: 16px;">
-                            <button class="btn-primary" id="shareAccountBtn">
-                                <i class="fas fa-share-alt"></i> Share Account
-                            </button>
-                            <button class="btn-secondary" id="copyLinkBtn">
-                                <i class="fas fa-copy"></i> Copy Link
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -491,6 +478,14 @@
             });
         }
     </script>
+
+    <!-- PWA Install Popup -->
+    <div class="pwa-popup" id="pwaPopup">
+        <div class="pwa-popup-content">
+            <span class="pwa-popup-text">📱 Install Money Manager for quick access</span>
+            <button class="pwa-popup-close" id="pwaPopupClose"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
 </body>
 </html>
 

@@ -61,7 +61,6 @@ const el = {
   qrTabs: document.querySelectorAll(".qr-tab"),
   scanTab: document.getElementById("scanTab"),
   myQrTab: document.getElementById("myqrTab"),
-  mockScanBtn: document.getElementById("mockScanBtn"),
   transferForm: document.getElementById("transferForm"),
   receiverAccount: document.getElementById("receiverAccount"),
   transferAmount: document.getElementById("transferAmount"),
@@ -402,8 +401,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     initQuickActions();
     initSecureLinks();
     initRealtime();
-    await initPushNotifications();
     initPWAInstall();
+    document.getElementById('detailPrevBtn')?.addEventListener('click', showPrevDetail);
+    document.getElementById('detailNextBtn')?.addEventListener('click', showNextDetail);
+    document.getElementById('notificationDetailClose')?.addEventListener('click', closeNotificationDetail);
+    document.getElementById('notificationDetailModal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeNotificationDetail();
+    });
+    await initPushNotifications();
     updateDate();
 
     showToast("Dashboard synced");
@@ -479,6 +484,9 @@ function updateBalanceAndStats() {
 
   const total = state.accounts.reduce((sum, acc) => sum + Number(acc.balance || 0), 0);
   el.balanceAmount.textContent = formatMoney(total);
+  if (!state.balanceVisible) {
+    document.querySelector(".mobile-balance-amount.compact")?.classList.add("hidden");
+  }
 
   if (el.monthlyIncome) el.monthlyIncome.textContent = `+${formatMoney(state.monthlyIncome)}`;
   if (el.monthlyExpense) el.monthlyExpense.textContent = `-${formatMoney(state.monthlyExpense)}`;
@@ -637,33 +645,108 @@ async function clearAllNotifications() {
   }
 }
 function showNotificationsDialog() {
-  if (!el.notificationsModal || !el.notificationsList) {
-    window.alert("Notifications unavailable.");
-    return;
-  }
+  if (!el.notificationsModal || !el.notificationsList) return;
 
   if (!state.notifications.length) {
     el.notificationsList.innerHTML = `
-      <div class="account-item">
-        <div class="account-info">
-          <div class="account-name">No notifications right now</div>
-          <div class="account-balance">You are all caught up</div>
-        </div>
+      <div class="notification-empty">
+        <i class="far fa-bell-slash"></i>
+        <p>No notifications</p>
       </div>
     `;
   } else {
     el.notificationsList.innerHTML = state.notifications.map((n) => `
-      <div class="account-item">
-        <div class="account-info">
-          <div class="account-name">${escapeHtml(n.title)}</div>
-          <div class="account-balance">${escapeHtml(n.detail)}</div>
+      <div class="notification-item ${n.is_read ? '' : 'unread'}" data-id="${n.id}">
+        <div class="notification-icon wallet">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">${escapeHtml(n.title)}</div>
+          <div class="notification-message">${escapeHtml(n.detail)}</div>
+          <div class="notification-time">${formatTime(n.created_at)}</div>
+        </div>
+        <div class="notification-right">
+          <span class="notification-time-amount">${formatTimeShort(n.created_at)}</span>
+          ${!n.is_read ? '<span class="unread-dot"></span>' : ''}
         </div>
       </div>
     `).join("");
-  }
 
+    document.querySelectorAll('.notification-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.id;
+        const index = state.notifications.findIndex(n => n.id == id);
+        if (index !== -1) openNotificationDetail(index);
+      });
+    });
+  }
   closeMenu();
   el.notificationsModal.classList.add("active");
+}
+
+let currentDetailIndex = 0;
+let detailNotifications = [];
+
+function openNotificationDetail(index) {
+  const modal = document.getElementById('notificationDetailModal');
+  const container = document.getElementById('notificationDetailContainer');
+  if (!modal || !container) return;
+  currentDetailIndex = index;
+  detailNotifications = state.notifications;
+  renderDetailSlides();
+  modal.classList.add('active');
+  updateDetailButtons();
+}
+
+function renderDetailSlides() {
+  const container = document.getElementById('notificationDetailContainer');
+  if (!container) return;
+  let slidesHtml = '';
+  detailNotifications.forEach((n, idx) => {
+    slidesHtml += `
+      <div class="notification-detail-slide ${idx === currentDetailIndex ? 'active' : ''}" data-index="${idx}">
+        <div class="detail-icon wallet">
+          <i class="fas fa-bell"></i>
+        </div>
+        <div class="detail-title">${escapeHtml(n.title)}</div>
+        <div class="detail-message">${escapeHtml(n.detail)}</div>
+        <div class="detail-time">${formatTime(n.created_at)}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = slidesHtml;
+}
+
+function showPrevDetail() {
+  if (currentDetailIndex > 0) {
+    currentDetailIndex--;
+    updateActiveSlide();
+    updateDetailButtons();
+  }
+}
+function showNextDetail() {
+  if (currentDetailIndex < detailNotifications.length - 1) {
+    currentDetailIndex++;
+    updateActiveSlide();
+    updateDetailButtons();
+  }
+}
+function updateActiveSlide() {
+  const slides = document.querySelectorAll('.notification-detail-slide');
+  slides.forEach((s, idx) => {
+    s.classList.toggle('active', idx === currentDetailIndex);
+  });
+}
+function updateDetailButtons() {
+  const prev = document.getElementById('detailPrevBtn');
+  const next = document.getElementById('detailNextBtn');
+  const counter = document.getElementById('detailCounter');
+  if (prev) prev.disabled = currentDetailIndex === 0;
+  if (next) next.disabled = currentDetailIndex === detailNotifications.length - 1;
+  if (counter) counter.textContent = `${currentDetailIndex + 1} / ${detailNotifications.length}`;
+}
+function closeNotificationDetail() {
+  document.getElementById('notificationDetailModal')?.classList.remove('active');
 }
 
 function closeNotificationsDialog() {
@@ -691,7 +774,6 @@ function initQR() {
   });
 
   el.qrAccountSelect?.addEventListener("change", regenerateMyQr);
-  el.mockScanBtn?.addEventListener("click", mockScanQr);
   el.startScanBtn?.addEventListener("click", startScanner);
   el.stopScanBtn?.addEventListener("click", stopScanner);
   el.useCodeBtn?.addEventListener("click", resolveManualTransferCode);
@@ -853,14 +935,6 @@ function renderPseudoQrFallback(seed) {
 }
 
 // Updated mockScan to validate the secure payment link
-async function mockScanQr() {
-  if (!state.qrPayload?.transfer_code) {
-    showToast('No payment QR generated', 'error');
-    return;
-  }
-  applyScannedTransferCode(state.qrPayload.transfer_code);
-}
-
 function resolveManualTransferCode(rawInput) {
   const rawCode = String(rawInput ?? el.scanCodeInput?.value ?? "").trim().toUpperCase();
   if (!rawCode) {
@@ -1058,12 +1132,9 @@ async function scanFrame() {
 function initBalanceToggle() {
   el.balanceToggle?.addEventListener("click", () => {
     state.balanceVisible = !state.balanceVisible;
-
-    if (state.balanceVisible) {
-      el.balanceAmount.textContent = el.balanceAmount.dataset.real || "0.00";
-    } else {
-      el.balanceAmount.dataset.real = el.balanceAmount.textContent;
-      el.balanceAmount.textContent = "â€¢â€¢â€¢â€¢â€¢â€¢";
+    const container = document.querySelector(".mobile-balance-amount.compact");
+    if (container) {
+      container.classList.toggle("hidden", !state.balanceVisible);
     }
   });
 }
@@ -1097,20 +1168,59 @@ function initRealtime() {
 }
 
 let deferredPrompt = null;
+let pwaPopupTimer = null;
+
 function initPWAInstall() {
-  window.addEventListener("beforeinstallprompt", (e) => {
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    if (el.installBtn) el.installBtn.hidden = false;
+    showPwaPopup();
   });
 
-  el.installBtn?.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
+  window.addEventListener('appinstalled', () => {
+    hidePwaPopup();
     deferredPrompt = null;
-    el.installBtn.hidden = true;
   });
+
+  const closeBtn = document.getElementById('pwaPopupClose');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hidePwaPopup();
+    });
+  }
+
+  const popup = document.getElementById('pwaPopup');
+  if (popup) {
+    popup.addEventListener('click', (e) => {
+      if (e.target.closest('.pwa-popup-close')) return;
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          hidePwaPopup();
+        });
+      }
+    });
+  }
+}
+
+function showPwaPopup() {
+  const popup = document.getElementById('pwaPopup');
+  if (!popup) return;
+  popup.classList.add('show');
+  if (pwaPopupTimer) clearTimeout(pwaPopupTimer);
+  pwaPopupTimer = setTimeout(() => {
+    popup.classList.remove('show');
+  }, 3000);
+}
+
+function hidePwaPopup() {
+  const popup = document.getElementById('pwaPopup');
+  if (popup) popup.classList.remove('show');
+  if (pwaPopupTimer) clearTimeout(pwaPopupTimer);
 }
 
 function updateDate() {
@@ -1236,6 +1346,30 @@ function formatMoney(amount) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(Number(amount || 0));
+}
+
+function formatTime(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.round(diffMs / 60000);
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} min ago`;
+  if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hour${diffMins >= 120 ? 's' : ''} ago`;
+  return date.toLocaleDateString();
+}
+
+function formatTimeShort(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.round(diffMs / 60000);
+  if (diffMins < 1) return 'now';
+  if (diffMins < 60) return `${diffMins}m`;
+  if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h`;
+  return `${Math.floor(diffMins / 1440)}d`;
 }
 
 function shortCode(value) {
@@ -1476,298 +1610,4 @@ function urlBase64ToUint8Array(base64String) {
     if (parseInt(notificationCountEl.innerText, 10) > 0) bellParent.classList.add("has-notifications");
   }
 })();
-
-// ========== ENHANCED NOTIFICATIONS SYSTEM – RECEIVED STYLE ==========
-(function() {
-    // Disabled: duplicate mock notification layer conflicts with dashboard state.
-    return;
-    // Mock notifications data – replace with real data from backend
-    let notifications = [
-        {
-            id: 1,
-            icon: 'wallet',
-            title: 'Income Received',
-            message: 'You received $1,250 from Client',
-            time: '2 min ago',
-            timeRaw: '2m',
-            unread: true
-        },
-        {
-            id: 2,
-            icon: 'credit-card',
-            title: 'Bill Payment Due',
-            message: 'Your credit card bill is due in 3 days',
-            time: '1 hour ago',
-            timeRaw: '1h',
-            unread: true
-        },
-        {
-            id: 3,
-            icon: 'chart-line',
-            title: 'Budget Alert',
-            message: 'You have used 85% of your monthly budget',
-            time: 'Yesterday',
-            timeRaw: '24h+',
-            unread: false
-        },
-        {
-            id: 4,
-            icon: 'gift',
-            title: 'Reward Earned',
-            message: 'You earned 500 reward points',
-            time: '2 days ago',
-            timeRaw: '48h+',
-            unread: false
-        }
-    ];
-
-    const notificationBell = document.getElementById('mobileNotifications');
-    const notificationModal = document.getElementById('notificationsModal');
-    const notificationClose = document.getElementById('notificationsClose');
-    const notificationsList = document.getElementById('notificationsList');
-    const notificationCountSpan = document.getElementById('notificationCount');
-    const clearAllBtn = document.getElementById('clearAllNotifications');
-
-    const detailModal = document.getElementById('notificationDetailModal');
-    const detailContainer = document.getElementById('notificationDetailContainer');
-    const detailClose = document.getElementById('notificationDetailClose');
-    const detailPrevBtn = document.getElementById('detailPrevBtn');
-    const detailNextBtn = document.getElementById('detailNextBtn');
-    const detailCounter = document.getElementById('detailCounter');
-
-    let currentDetailIndex = 0;
-    let detailNotifications = [];
-    let notificationsJustCleared = false;
-
-    function isRecent(timeRaw) {
-        if (!timeRaw) return false;
-        return timeRaw.includes('m') || timeRaw.includes('now') || timeRaw === '1h';
-    }
-
-    function updateNotificationCount() {
-        const unreadCount = notifications.filter(n => n.unread).length;
-        if (notificationCountSpan) notificationCountSpan.textContent = unreadCount;
-        const menuBadge = document.getElementById('menuNotificationBadge');
-        if (menuBadge) menuBadge.textContent = unreadCount;
-    }
-
-    function renderNotifications() {
-        if (!notificationsList) return;
-
-        if (notifications.length === 0) {
-            const emptyMessage = notificationsJustCleared ? 'All notifications cleared' : 'No notifications';
-            notificationsList.innerHTML = `
-                <div class="notification-empty">
-                    <i class="far fa-bell-slash"></i>
-                    <p>${emptyMessage}</p>
-                </div>
-            `;
-            return;
-        }
-
-        let html = '';
-        notifications.forEach(n => {
-            const recentClass = isRecent(n.timeRaw) ? 'recent' : '';
-            html += `
-                <div class="notification-item ${n.unread ? 'unread' : ''} ${recentClass}" data-id="${n.id}">
-                    <div class="notification-icon ${n.icon}">
-                        <i class="fas fa-${n.icon}"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">${n.title}</div>
-                        <div class="notification-message">${n.message}</div>
-                        <div class="notification-time">${n.time}</div>
-                    </div>
-                    <div class="notification-right">
-                        <span class="notification-time-amount">${n.time}</span>
-                        ${n.unread ? '<span class="unread-dot"></span>' : ''}
-                    </div>
-                </div>
-            `;
-        });
-        notificationsList.innerHTML = html;
-
-        document.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const id = parseInt(item.dataset.id, 10);
-                const index = notifications.findIndex(n => n.id === id);
-                if (index !== -1) openNotificationDetail(index);
-            });
-        });
-    }
-
-    function markAsRead(id) {
-        const notification = notifications.find(n => n.id === id);
-        if (notification && notification.unread) {
-            notification.unread = false;
-            renderNotifications();
-            updateNotificationCount();
-        }
-    }
-
-    function clearAllNotifications() {
-        fetch(`${CONFIG.API_BASE}/users/notifications/clear`, {
-            method: 'POST',
-            credentials: 'include'
-        })
-            .then((res) => res.json().catch(() => ({})).then((payload) => ({ ok: res.ok, payload })))
-            .then(({ ok, payload }) => {
-                if (!ok) {
-                    throw new Error(payload.error || 'Failed to clear notifications');
-                }
-
-                notifications = [];
-                notificationsJustCleared = true;
-                renderNotifications();
-                updateNotificationCount();
-                closeNotificationDetail();
-                if (typeof showToast === 'function') {
-                    showToast('All notifications cleared');
-                }
-            })
-            .catch((err) => {
-                if (typeof showToast === 'function') {
-                    showToast(err.message || 'Failed to clear notifications', 'error');
-                }
-            });
-    }
-
-    function openNotificationModal() {
-        if (!notificationModal) return;
-        notificationModal.classList.add('active');
-        renderNotifications();
-    }
-
-    function closeNotificationModal() {
-        if (!notificationModal) return;
-        notificationModal.classList.remove('active');
-    }
-
-    function openNotificationDetail(index) {
-        if (!detailModal || !detailContainer) return;
-        currentDetailIndex = index;
-        detailNotifications = notifications;
-        renderDetailSlides();
-        detailModal.classList.add('active');
-        updateDetailButtons();
-    }
-
-    function renderDetailSlides() {
-        if (!detailContainer) return;
-
-        let slidesHtml = '';
-        detailNotifications.forEach((n, idx) => {
-            slidesHtml += `
-                <div class="notification-detail-slide ${idx === currentDetailIndex ? 'active' : ''}" data-index="${idx}">
-                    <div class="detail-icon ${n.icon}">
-                        <i class="fas fa-${n.icon}"></i>
-                    </div>
-                    <div class="detail-title">${n.title}</div>
-                    <div class="detail-message">${n.message}</div>
-                    <div class="detail-time">${n.time}</div>
-                    <div class="detail-actions">
-                        <button class="btn-primary" data-id="${n.id}" data-action="mark-read">Mark as Read</button>
-                    </div>
-                </div>
-            `;
-        });
-        detailContainer.innerHTML = slidesHtml;
-
-        detailContainer.querySelectorAll('[data-action="mark-read"]').forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(e.currentTarget.dataset.id, 10);
-                markAsRead(id);
-            });
-        });
-    }
-
-    function showPrevDetail() {
-        if (currentDetailIndex > 0) {
-            animateSlide('right');
-            currentDetailIndex--;
-            updateActiveSlide();
-            updateDetailButtons();
-        }
-    }
-
-    function showNextDetail() {
-        if (currentDetailIndex < detailNotifications.length - 1) {
-            animateSlide('left');
-            currentDetailIndex++;
-            updateActiveSlide();
-            updateDetailButtons();
-        }
-    }
-
-    function animateSlide(direction) {
-        const slides = detailContainer?.querySelectorAll('.notification-detail-slide') || [];
-        const currentSlide = slides[currentDetailIndex];
-        const nextIndex = direction === 'left' ? currentDetailIndex + 1 : currentDetailIndex - 1;
-        const nextSlide = slides[nextIndex];
-        if (!currentSlide || !nextSlide) return;
-
-        if (direction === 'left') {
-            currentSlide.classList.add('slide-left');
-            nextSlide.classList.add('active', 'slide-left');
-        } else {
-            currentSlide.classList.add('slide-right');
-            nextSlide.classList.add('active', 'slide-right');
-        }
-
-        setTimeout(() => {
-            slides.forEach(s => s.classList.remove('slide-left', 'slide-right', 'active'));
-            updateActiveSlide();
-        }, 250);
-    }
-
-    function updateActiveSlide() {
-        const slides = detailContainer?.querySelectorAll('.notification-detail-slide') || [];
-        slides.forEach((s, idx) => {
-            s.classList.remove('active', 'slide-left', 'slide-right');
-            if (idx === currentDetailIndex) s.classList.add('active');
-        });
-        if (detailCounter) detailCounter.textContent = `${currentDetailIndex + 1} / ${detailNotifications.length}`;
-    }
-
-    function updateDetailButtons() {
-        if (detailPrevBtn) detailPrevBtn.disabled = currentDetailIndex === 0;
-        if (detailNextBtn) detailNextBtn.disabled = currentDetailIndex === detailNotifications.length - 1;
-        if (detailCounter) detailCounter.textContent = `${currentDetailIndex + 1} / ${detailNotifications.length}`;
-    }
-
-    function closeNotificationDetail() {
-        if (!detailModal) return;
-        detailModal.classList.remove('active');
-    }
-
-    if (notificationBell) {
-        notificationBell.addEventListener('click', openNotificationModal);
-    }
-    if (notificationClose) {
-        notificationClose.addEventListener('click', closeNotificationModal);
-    }
-    if (notificationModal) {
-        notificationModal.addEventListener('click', (e) => {
-            if (e.target === notificationModal) closeNotificationModal();
-        });
-    }
-    if (clearAllBtn) {
-        clearAllBtn.addEventListener('click', clearAllNotifications);
-    }
-
-    if (detailClose) detailClose.addEventListener('click', closeNotificationDetail);
-    if (detailPrevBtn) detailPrevBtn.addEventListener('click', showPrevDetail);
-    if (detailNextBtn) detailNextBtn.addEventListener('click', showNextDetail);
-    if (detailModal) {
-        detailModal.addEventListener('click', (e) => {
-            if (e.target === detailModal) closeNotificationDetail();
-        });
-    }
-
-    renderNotifications();
-    updateNotificationCount();
-})();
-
-
 
