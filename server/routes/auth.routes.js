@@ -27,8 +27,13 @@ router.post("/login", async (req, res) => {
       .single();
 
     if (error && error.code !== "PGRST116") {
-      console.error("Login query failed:", error.message || error);
-      return res.status(500).json({ error: "Auth service unavailable" });
+      const rawMessage = String(error.message || error);
+      const hintPattern = /invalid api key|api key|jwt|permission|row-level security|not configured/i;
+      const userMessage = hintPattern.test(rawMessage)
+        ? "Auth backend misconfigured. Check SUPABASE_SERVICE_ROLE_KEY."
+        : "Auth service unavailable";
+      console.error("Login query failed:", rawMessage);
+      return res.status(500).json({ error: userMessage });
     }
 
     if (!data) {
