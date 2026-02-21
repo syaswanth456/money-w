@@ -3,10 +3,11 @@
 // ======================================================
 
 const { createClient } = require("@supabase/supabase-js");
+const { getConfigValue } = require("./secretValue");
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = getConfigValue("SUPABASE_URL");
 const SUPABASE_SERVICE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  getConfigValue("SUPABASE_SERVICE_ROLE_KEY") || getConfigValue("SUPABASE_ANON_KEY");
 
 function createDisabledQuery(reason) {
   const errorPayload = {

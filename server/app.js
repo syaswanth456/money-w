@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const cors = require("cors");
+const { getConfigValue } = require("./config/secretValue");
 
 const authRoutes = require("./routes/auth.routes");
 const accountsRoutes = require("./routes/accounts.routes");
@@ -31,7 +32,7 @@ app.use(
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "mm-secret",
+    secret: getConfigValue("SESSION_SECRET") || "mm-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
