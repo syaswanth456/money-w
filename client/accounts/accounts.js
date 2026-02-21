@@ -1,4 +1,4 @@
-// ======================================================================
+﻿// ======================================================================
 // MONEY MANAGER — ACCOUNTS PAGE (SECURE PRODUCTION)
 // Backend-driven • Realtime-ready • No direct HTML exposure
 // ======================================================================
@@ -7,7 +7,7 @@
 // CONFIG
 // ----------------------------------------------------------------------
 const CONFIG = {
-  API_BASE: window.ENV?.API_BASE || "http://localhost:3000"
+  API_BASE: window.ENV?.API_BASE || window.location.origin
 };
 
 // ----------------------------------------------------------------------
@@ -373,3 +373,4 @@ function initRealtime() {
     if (typeof loadDashboard === "function") loadDashboard();
   });
 }
+

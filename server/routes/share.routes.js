@@ -47,7 +47,12 @@ router.post("/generate", requireUser, async (req, res) => {
 
     // 🔹 build access URL
     const baseUrl =
-      process.env.APP_BASE_URL || "http://localhost:3000";
+      process.env.APP_BASE_URL ||
+      process.env.APP_BASE_URl ||
+      process.env.P_BASE_URL ||
+      process.env.API_BASE_URL ||
+      process.env.RENDER_EXTERNAL_URL ||
+      "http://localhost:3000";
 
     const shareUrl = `${baseUrl}/share/${shareCode}`;
 

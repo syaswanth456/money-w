@@ -1,10 +1,10 @@
-// ======================================================================
+﻿// ======================================================================
 // MONEY MANAGER — TRANSFER ENGINE (PRODUCTION)
 // Atomic • Secure • Realtime-ready
 // ======================================================================
 
 const CONFIG = {
-  API_BASE: window.ENV?.API_BASE || "http://localhost:3000"
+  API_BASE: window.ENV?.API_BASE || window.location.origin
 };
 
 const ROUTES = {
@@ -233,3 +233,4 @@ function showToast(message, type = "success") {
 
   setTimeout(() => el.toast.classList.remove("show"), 3000);
 }
+

@@ -1,5 +1,5 @@
-const CONFIG = {
-  API_BASE: window.ENV?.API_BASE || "http://localhost:3000"
+﻿const CONFIG = {
+  API_BASE: window.ENV?.API_BASE || window.location.origin
 };
 
 const ROUTES = {
@@ -933,3 +933,4 @@ async function notifyNow(title, body) {
     showToast(body);
   }
 }
+

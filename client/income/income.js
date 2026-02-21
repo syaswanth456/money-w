@@ -1,11 +1,11 @@
-// ======================================================================
+﻿// ======================================================================
 // MONEY MANAGER — INCOME ENGINE (PRODUCTION)
 // Atomic • Backend-driven • Popup UI compatible
 // ======================================================================
 
 // ----------------------------------------------------------------------
 const CONFIG = {
-  API_BASE: window.ENV?.API_BASE || "http://localhost:3000"
+  API_BASE: window.ENV?.API_BASE || window.location.origin
 };
 
 // ----------------------------------------------------------------------
@@ -276,3 +276,4 @@ function showToast(message, type = "success") {
 
   setTimeout(() => el.toast.classList.remove("show"), 3000);
 }
+
