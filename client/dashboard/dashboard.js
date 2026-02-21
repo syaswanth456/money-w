@@ -59,6 +59,7 @@ const el = {
 
   qrBtn: document.getElementById("mobileQrBtn"),
   qrPopup: document.getElementById("qrPopup"),
+  qrContent: document.querySelector(".qr-content"),
   qrOverlay: document.getElementById("qrOverlay"),
   qrClose: document.getElementById("qrClose"),
   qrTabs: document.querySelectorAll(".qr-tab"),
@@ -767,6 +768,11 @@ function initQR() {
       el.qrTabs.forEach((t) => t.classList.toggle("active", t === tab));
       el.scanTab?.classList.toggle("active", target === "scan");
       el.myQrTab?.classList.toggle("active", target === "myqr");
+
+      if (el.qrContent) el.qrContent.scrollTop = 0;
+      if (el.scanTab) el.scanTab.scrollTop = 0;
+      if (el.myQrTab) el.myQrTab.scrollTop = 0;
+
       if (target === "myqr") {
         stopScanner();
         regenerateMyQr();
@@ -846,6 +852,9 @@ function openQR() {
   document.body.style.overflow = "hidden";
 
   el.qrPopup?.classList.add("active");
+  if (el.qrContent) el.qrContent.scrollTop = 0;
+  if (el.scanTab) el.scanTab.scrollTop = 0;
+  if (el.myQrTab) el.myQrTab.scrollTop = 0;
 
   if (!qrHistoryPushed) {
     window.history.pushState({ mmQrOpen: true }, "");
@@ -936,8 +945,8 @@ async function regenerateMyQr() {
 function renderPaymentQr(seed) {
   if (!el.qrPattern) return;
   const payload = encodeURIComponent(`MMPAY:${String(seed || "").toUpperCase()}`);
-  const qrUrlPrimary = `https://api.qrserver.com/v1/create-qr-code/?size=360x360&ecc=H&margin=12&data=${payload}`;
-  const qrUrlSecondary = `https://chart.googleapis.com/chart?chs=360x360&cht=qr&chl=${payload}`;
+  const qrUrlPrimary = `https://api.qrserver.com/v1/create-qr-code/?size=460x460&ecc=H&margin=12&data=${payload}`;
+  const qrUrlSecondary = `https://chart.googleapis.com/chart?chs=460x460&cht=qr&chl=${payload}`;
 
   el.qrPattern.innerHTML = "";
   const img = document.createElement("img");

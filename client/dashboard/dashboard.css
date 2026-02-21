@@ -2565,3 +2565,24 @@ button, [role="button"], .action-card, .menu-item, .nav-item, .transaction-item-
   width: min(84vw, 320px);
   height: min(84vw, 320px);
 }
+
+/* Fix My QR auto-drop and enlarge My QR display */
+.qr-content {
+  max-height: 92vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.qr-tab-content {
+  min-height: 420px;
+}
+
+.my-qr .qr-code-display {
+  width: min(90vw, 360px);
+  height: min(90vw, 360px);
+}
+
+#qrPattern {
+  width: 96%;
+  height: 96%;
+}
