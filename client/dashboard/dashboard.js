@@ -42,6 +42,9 @@ const state = {
 // ðŸ” Secret for HMAC (in production, use a strong secret from env)
 const SHARE_SECRET = 'money-manager-share-secret-change-in-production';
 
+let qrScrollY = 0;
+let qrHistoryPushed = false;
+
 const el = {
   menuBtn: document.getElementById("mobileMenuBtn"),
   sideMenu: document.getElementById("mobileSideMenu"),
@@ -823,10 +826,32 @@ function initQR() {
   }
   el.ownerApproveBtn?.addEventListener("click", approvePendingAccessRequest);
   el.ownerRejectBtn?.addEventListener("click", rejectPendingAccessRequest);
+
+  window.addEventListener("popstate", () => {
+    if (el.qrPopup?.classList.contains("active")) {
+      closeQR({ fromPopState: true });
+    }
+  });
 }
 
 function openQR() {
+  if (el.qrPopup?.classList.contains("active")) return;
+
+  qrScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${qrScrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.body.style.overflow = "hidden";
+
   el.qrPopup?.classList.add("active");
+
+  if (!qrHistoryPushed) {
+    window.history.pushState({ mmQrOpen: true }, "");
+    qrHistoryPushed = true;
+  }
+
   const scanTabBtn = document.querySelector('.qr-tab[data-tab="scan"]');
   if (scanTabBtn) {
     el.qrTabs.forEach((t) => t.classList.toggle("active", t === scanTabBtn));
@@ -837,9 +862,28 @@ function openQR() {
   startScanner();
 }
 
-function closeQR() {
+function closeQR(options = {}) {
+  const { fromPopState = false } = options;
+  if (!el.qrPopup?.classList.contains("active")) return;
+
   stopScanner();
   el.qrPopup?.classList.remove("active");
+
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  document.body.style.overflow = "";
+  window.scrollTo(0, qrScrollY);
+
+  if (qrHistoryPushed && !fromPopState) {
+    qrHistoryPushed = false;
+    window.history.back();
+    return;
+  }
+
+  qrHistoryPushed = false;
 }
 
 function hydrateQrData() {
