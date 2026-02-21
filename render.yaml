@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: money-w
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm run render-start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
