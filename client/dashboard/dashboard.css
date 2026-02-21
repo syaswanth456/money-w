@@ -2271,7 +2271,6 @@ button, [role="button"], .action-card, .menu-item, .nav-item, .transaction-item-
 .mobile-balance-amount.compact.hidden .currency,
 .mobile-balance-amount.compact.hidden .amount {
     visibility: hidden;
-    position: relative;
 }
 .mobile-balance-amount.compact.hidden::after {
     content: "••••••";
@@ -2285,6 +2284,9 @@ button, [role="button"], .action-card, .menu-item, .nav-item, .transaction-item-
     background-clip: text;
     color: transparent;
     letter-spacing: -0.5px;
+}
+.mobile-balance-amount.compact {
+    position: relative;
 }
 
 .insights-grid {

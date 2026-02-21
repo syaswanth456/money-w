@@ -1077,7 +1077,7 @@ async function startScanner() {
     await el.scanVideo.play().catch(() => {});
 
     if (!state.scanner.detector) {
-      setScanStatus("BarcodeDetector unavailable. Use transfer code or demo scan.");
+      setScanStatus("BarcodeDetector unavailable. Use transfer code.");
       return;
     }
 
