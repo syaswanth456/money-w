@@ -247,14 +247,27 @@
                 <!-- Scan QR Tab -->
                 <div class="qr-tab-content active" id="scanTab">
                     <div class="qr-scanner">
-                        <div class="scanner-placeholder">
-                            <i class="fas fa-qrcode"></i>
-                            <p>Point camera at QR code to scan</p>
+                        <div class="scanner-placeholder" id="scannerPlaceholder">
+                            <video id="scanVideo" class="scan-video" autoplay playsinline muted></video>
+                            <div class="scan-overlay" aria-hidden="true"></div>
+                            <div class="scan-guide">
+                                <i class="fas fa-qrcode"></i>
+                                <p id="scanStatusText">Tap Start Camera and point to QR code</p>
+                            </div>
                         </div>
-                        
-                        <button class="mock-scan-btn" id="mockScanBtn">
-                            <i class="fas fa-camera"></i>
-                            Mock Scan
+                        <div class="scan-camera-actions">
+                            <button class="mock-scan-btn" id="startScanBtn" type="button">
+                                <i class="fas fa-camera"></i>
+                                Start Camera
+                            </button>
+                            <button class="btn-secondary" id="stopScanBtn" type="button">
+                                <i class="fas fa-stop-circle"></i>
+                                Stop
+                            </button>
+                        </div>
+                        <button class="mock-scan-btn" id="mockScanBtn" type="button">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            Use Demo Scan
                         </button>
                         <div class="manual-transfer-box">
                             <p class="manual-transfer-title">Or use shared transfer code</p>

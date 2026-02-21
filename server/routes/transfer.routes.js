@@ -7,6 +7,7 @@ const express = require("express");
 const router = express.Router();
 
 const { supabaseAdmin } = require("../config/supabaseClient");
+const { createInAppNotification } = require("../services/inapp-notifications");
 const {
   emitAccountsUpdate,
   emitTransactionsUpdate,
@@ -183,6 +184,37 @@ router.post("/", requireUser, async (req, res) => {
         note: note || "Transfer in",
         reference_id: transferRow.id,
         ...(createdAt ? { created_at: createdAt } : {})
+      });
+    }
+
+    const amountLabel = Number(amount || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    await createInAppNotification(userId, {
+      type: "transfer",
+      title: "Scan & Pay Sent",
+      message: `${amountLabel} sent from ${fromAccount.name} to ${toAccount?.name || "another account"}`,
+      icon: "exchange-alt",
+      meta: {
+        transfer_id: transferRow.id,
+        from_account_id,
+        to_account_id
+      }
+    });
+
+    if (toAccount) {
+      await createInAppNotification(userId, {
+        type: "transfer",
+        title: "Scan & Pay Received",
+        message: `${amountLabel} received in ${toAccount.name} from ${fromAccount.name}`,
+        icon: "wallet",
+        meta: {
+          transfer_id: transferRow.id,
+          from_account_id,
+          to_account_id
+        }
       });
     }
 

@@ -24,6 +24,13 @@ const state = {
   monthlyExpense: 0,
   qrPayload: null,
   scannedPayload: null,
+  scanner: {
+    stream: null,
+    detector: null,
+    raf: null,
+    active: false,
+    lastScanAt: 0
+  },
   currentShareLink: null, // ðŸ” for payment QR
   // NEW: remote access
   accessPayload: null,      // decoded from shared link
@@ -67,6 +74,11 @@ const el = {
   manualCodeInput: document.getElementById("manualCodeInput"),
   scanCodeInput: document.getElementById("scanCodeInput"),
   useCodeBtn: document.getElementById("useCodeBtn"),
+  scanVideo: document.getElementById("scanVideo"),
+  scanStatusText: document.getElementById("scanStatusText"),
+  scannerPlaceholder: document.getElementById("scannerPlaceholder"),
+  startScanBtn: document.getElementById("startScanBtn"),
+  stopScanBtn: document.getElementById("stopScanBtn"),
 
   balanceToggle: document.getElementById("mobileBalanceToggle"),
   balanceAmount: document.getElementById("mobileBalanceAmount"),
@@ -669,12 +681,19 @@ function initQR() {
       el.qrTabs.forEach((t) => t.classList.toggle("active", t === tab));
       el.scanTab?.classList.toggle("active", target === "scan");
       el.myQrTab?.classList.toggle("active", target === "myqr");
-      if (target === "myqr") regenerateMyQr();
+      if (target === "myqr") {
+        stopScanner();
+        regenerateMyQr();
+      } else {
+        startScanner();
+      }
     });
   });
 
   el.qrAccountSelect?.addEventListener("change", regenerateMyQr);
   el.mockScanBtn?.addEventListener("click", mockScanQr);
+  el.startScanBtn?.addEventListener("click", startScanner);
+  el.stopScanBtn?.addEventListener("click", stopScanner);
   el.useCodeBtn?.addEventListener("click", resolveManualTransferCode);
   el.scanCodeInput?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -726,10 +745,18 @@ function initQR() {
 
 function openQR() {
   el.qrPopup?.classList.add("active");
+  const scanTabBtn = document.querySelector('.qr-tab[data-tab="scan"]');
+  if (scanTabBtn) {
+    el.qrTabs.forEach((t) => t.classList.toggle("active", t === scanTabBtn));
+    el.scanTab?.classList.add("active");
+    el.myQrTab?.classList.remove("active");
+  }
   hydrateQrData();
+  startScanner();
 }
 
 function closeQR() {
+  stopScanner();
   el.qrPopup?.classList.remove("active");
 }
 
@@ -777,75 +804,80 @@ async function regenerateMyQr() {
   if (el.transferCode) el.transferCode.textContent = shortCode;
   if (el.manualCodeInput) el.manualCodeInput.value = shortCode;
 
-  // Scan&Pay QR should remain payment-only.
-  renderPseudoQr(shortCode);
+  renderPaymentQr(shortCode);
 }
 
-function renderPseudoQr(seed) {
+function renderPaymentQr(seed) {
   if (!el.qrPattern) return;
+  const payload = encodeURIComponent(`MMPAY:${String(seed || "").toUpperCase()}`);
+  const qrUrlPrimary = `https://api.qrserver.com/v1/create-qr-code/?size=360x360&ecc=H&margin=12&data=${payload}`;
+  const qrUrlSecondary = `https://chart.googleapis.com/chart?chs=360x360&cht=qr&chl=${payload}`;
 
+  el.qrPattern.innerHTML = "";
+  const img = document.createElement("img");
+  img.src = qrUrlPrimary;
+  img.alt = "Payment QR";
+  img.className = "access-share-qr-image";
+  img.loading = "eager";
+  img.decoding = "async";
+  img.referrerPolicy = "no-referrer";
+  img.crossOrigin = "anonymous";
+  img.dataset.qrFallbackTried = "0";
+
+  img.addEventListener("error", () => {
+    if (img.dataset.qrFallbackTried !== "1") {
+      img.dataset.qrFallbackTried = "1";
+      img.src = qrUrlSecondary;
+      return;
+    }
+    renderPseudoQrFallback(seed);
+  });
+
+  el.qrPattern.appendChild(img);
+}
+
+function renderPseudoQrFallback(seed) {
+  if (!el.qrPattern) return;
   let hash = 0;
   for (let i = 0; i < seed.length; i += 1) {
     hash = ((hash << 5) - hash) + seed.charCodeAt(i);
     hash |= 0;
   }
-
   const cells = [];
-  const size = 10;
+  const size = 25;
   for (let i = 0; i < size * size; i += 1) {
     const bit = ((hash >> (i % 24)) ^ i) & 1;
     cells.push(`<div class="qr-cell${bit ? "" : " white"}"></div>`);
   }
-  el.qrPattern.innerHTML = cells.join("");
+  el.qrPattern.innerHTML = `<div class="fallback-qr">${cells.join("")}</div>`;
 }
 
 // Updated mockScan to validate the secure payment link
 async function mockScanQr() {
-  if (!state.qrPayload?.account_id) {
+  if (!state.qrPayload?.transfer_code) {
     showToast('No payment QR generated', 'error');
     return;
   }
-
-  try {
-    const receiver = state.accounts.find((a) => String(a.id) === String(state.qrPayload.account_id));
-    if (!receiver) {
-      showToast('Receiver account not found', 'error');
-      return;
-    }
-
-    state.scannedPayload = {
-      account_id: receiver.id,
-      account_name: receiver.name,
-      transfer_code: generateTransferCode(receiver.id)
-    };
-
-    if (el.receiverAccount) {
-      el.receiverAccount.value = `${receiver.name} (${receiver.type || 'account'})`;
-    }
-
-    const sourceCandidates = state.accounts.filter((acc) => String(acc.id) !== String(receiver.id));
-    if (el.fromAccount) {
-      el.fromAccount.innerHTML = sourceCandidates.length
-        ? sourceCandidates.map((acc) => `<option value="${acc.id}">${acc.name} (${formatMoney(acc.balance)})</option>`).join('')
-        : '<option value="">No source account</option>';
-      el.fromAccount.disabled = sourceCandidates.length === 0;
-    }
-
-    el.transferForm?.classList.add('active');
-    showToast('QR scanned. Enter amount to pay.');
-  } catch (e) {
-    showToast('Invalid QR code', 'error');
-  }
+  applyScannedTransferCode(state.qrPayload.transfer_code);
 }
 
-function resolveManualTransferCode() {
-  const rawCode = String(el.scanCodeInput?.value || "").trim().toUpperCase();
+function resolveManualTransferCode(rawInput) {
+  const rawCode = String(rawInput ?? el.scanCodeInput?.value ?? "").trim().toUpperCase();
   if (!rawCode) {
     showToast("Enter transfer code first", "error");
     return;
   }
+  applyScannedTransferCode(rawCode);
+}
 
-  const receiver = state.accounts.find((acc) => generateTransferCode(acc.id) === rawCode);
+function applyScannedTransferCode(rawCode) {
+  const code = extractTransferCode(rawCode);
+  if (!code) {
+    showToast("Invalid transfer code", "error");
+    return;
+  }
+
+  const receiver = state.accounts.find((acc) => generateTransferCode(acc.id) === code);
   if (!receiver) {
     showToast("Invalid transfer code", "error");
     return;
@@ -854,7 +886,7 @@ function resolveManualTransferCode() {
   state.scannedPayload = {
     account_id: receiver.id,
     account_name: receiver.name,
-    transfer_code: rawCode
+    transfer_code: code
   };
 
   if (el.receiverAccount) {
@@ -870,6 +902,7 @@ function resolveManualTransferCode() {
   }
 
   el.transferForm?.classList.add("active");
+  setScanStatus(`Scanned ${code}. Enter amount and confirm.`);
   showToast("Code matched. Enter amount and confirm.");
 }
 
@@ -909,6 +942,7 @@ async function confirmScanPayment() {
 
     el.transferAmount.value = "";
     el.transferForm?.classList.remove("active");
+    stopScanner();
     closeQR();
     await loadDashboard();
     showToast("Transfer successful");
@@ -916,6 +950,109 @@ async function confirmScanPayment() {
     console.error("Scan pay error:", err);
     showToast("Transfer failed", "error");
   }
+}
+
+function extractTransferCode(rawValue) {
+  const raw = String(rawValue || "").trim();
+  if (!raw) return "";
+
+  const upper = raw.toUpperCase();
+  if (upper.startsWith("MMPAY:")) {
+    return upper.split(":").pop().trim();
+  }
+
+  try {
+    const parsed = new URL(raw);
+    const code = parsed.searchParams.get("code") || parsed.searchParams.get("transfer_code");
+    if (code) return String(code).toUpperCase();
+  } catch (_) {
+    // not a URL
+  }
+
+  return upper;
+}
+
+function setScanStatus(message) {
+  if (el.scanStatusText) el.scanStatusText.textContent = message;
+}
+
+async function startScanner() {
+  if (!el.scanVideo || !el.scanTab?.classList.contains("active")) return;
+  if (state.scanner.active) return;
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    setScanStatus("Camera not supported. Use transfer code field.");
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    });
+
+    state.scanner.stream = stream;
+    state.scanner.active = true;
+    state.scanner.detector = typeof BarcodeDetector !== "undefined"
+      ? new BarcodeDetector({ formats: ["qr_code"] })
+      : null;
+
+    el.scanVideo.srcObject = stream;
+    el.scannerPlaceholder?.classList.add("scanning");
+    setScanStatus("Scanning... align QR inside frame");
+    await el.scanVideo.play().catch(() => {});
+
+    if (!state.scanner.detector) {
+      setScanStatus("BarcodeDetector unavailable. Use transfer code or demo scan.");
+      return;
+    }
+
+    scanFrame();
+  } catch (err) {
+    console.error("Camera start failed:", err);
+    setScanStatus("Camera access blocked. Allow permission and retry.");
+    showToast("Camera permission required for QR scan", "error");
+  }
+}
+
+function stopScanner() {
+  if (state.scanner.raf) {
+    cancelAnimationFrame(state.scanner.raf);
+    state.scanner.raf = null;
+  }
+
+  if (state.scanner.stream) {
+    state.scanner.stream.getTracks().forEach((track) => track.stop());
+    state.scanner.stream = null;
+  }
+
+  state.scanner.active = false;
+  if (el.scanVideo) el.scanVideo.srcObject = null;
+  el.scannerPlaceholder?.classList.remove("scanning");
+  setScanStatus("Tap Start Camera and point to QR code");
+}
+
+async function scanFrame() {
+  if (!state.scanner.active || !state.scanner.detector || !el.scanVideo) return;
+
+  try {
+    const codes = await state.scanner.detector.detect(el.scanVideo);
+    if (codes?.length) {
+      const now = Date.now();
+      if (now - state.scanner.lastScanAt > 1000) {
+        state.scanner.lastScanAt = now;
+        const value = String(codes[0].rawValue || "").trim();
+        if (value) {
+          resolveManualTransferCode(value);
+          return;
+        }
+      }
+    }
+  } catch (_) {
+    // ignore detection frame errors
+  }
+
+  state.scanner.raf = requestAnimationFrame(scanFrame);
 }
 
 function initBalanceToggle() {
