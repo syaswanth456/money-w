@@ -12,23 +12,30 @@ router.get("/me", (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPassword = String(password || "");
 
-    if (!email || !password) {
+    if (!normalizedEmail || !normalizedPassword) {
       return res.status(400).json({ error: "Missing credentials" });
     }
 
     const { data, error } = await supabase
       .from("users")
       .select("*")
-      .eq("email", email)
+      .eq("email", normalizedEmail)
       .single();
 
-    if (error || !data) {
+    if (error && error.code !== "PGRST116") {
+      console.error("Login query failed:", error.message || error);
+      return res.status(500).json({ error: "Auth service unavailable" });
+    }
+
+    if (!data) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    if (data.password !== password) {
+    if (String(data.password || "") !== normalizedPassword) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
@@ -47,16 +54,19 @@ router.post("/login", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password } = req.body || {};
+    const normalizedName = String(name || "").trim();
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPassword = String(password || "");
 
-    if (!name || !email || !password) {
+    if (!normalizedName || !normalizedEmail || !normalizedPassword) {
       return res.status(400).json({ error: "Missing fields" });
     }
 
     const { data: existing } = await supabase
       .from("users")
       .select("id")
-      .eq("email", email)
+      .eq("email", normalizedEmail)
       .maybeSingle();
 
     if (existing) {
@@ -65,7 +75,7 @@ router.post("/signup", async (req, res) => {
 
     const { data, error } = await supabase
       .from("users")
-      .insert([{ name, email, password }])
+      .insert([{ name: normalizedName, email: normalizedEmail, password: normalizedPassword }])
       .select("*")
       .single();
 
