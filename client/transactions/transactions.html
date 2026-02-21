@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="/shared/appearance.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Manager - Transactions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/transactions/transactions.css">
+  <script src="/transactions/transactions.js" defer></script>
+</head>
+<body>
+  <div class="mobile-app">
+    <div class="page-header">
+      <a class="back-btn" href="#" data-nav="dashboard"><i class="fas fa-arrow-left"></i></a>
+      <h1>Transactions</h1>
+      <div class="actions">
+        <button type="button" class="action-btn" data-nav="income">Income</button>
+        <button type="button" class="action-btn" data-nav="expense">Expense</button>
+      </div>
+    </div>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <h2>Income</h2>
+        <p id="sumIncome">0.00</p>
+      </article>
+      <article class="summary-card">
+        <h2>Expense</h2>
+        <p id="sumExpense">0.00</p>
+      </article>
+      <article class="summary-card">
+        <h2>Bill</h2>
+        <p id="sumBill">0.00</p>
+      </article>
+      <article class="summary-card">
+        <h2>Total Balance</h2>
+        <p id="sumBalance">0.00</p>
+      </article>
+    </section>
+
+    <section class="list glass-card">
+      <h2>Recent Transactions</h2>
+      <div id="txList"></div>
+    </section>
+
+    <nav class="mobile-bottom-nav">
+      <a href="#" class="nav-item" data-nav="dashboard">
+        <i class="fas fa-home"></i><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-nav="income">
+        <i class="fas fa-arrow-up"></i><span>Income</span>
+      </a>
+      <a href="#" class="nav-item active">
+        <i class="fas fa-exchange-alt"></i><span>Transactions</span>
+      </a>
+      <a href="#" class="nav-item" data-nav="expense">
+        <i class="fas fa-arrow-down"></i><span>Expense</span>
+      </a>
+      <a href="/app/nav/settings" class="nav-item">
+        <i class="fas fa-cog"></i><span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="modal-overlay" id="txEditModal" role="dialog" aria-hidden="true">
+      <div class="modal-content glass-card">
+        <div class="modal-header">
+          <h3>Edit Transaction</h3>
+          <button class="close-btn" id="txEditClose"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="txEditForm">
+          <div class="field">
+            <label for="txEditType">Type</label>
+            <input id="txEditType" type="text" readonly>
+          </div>
+          <div class="field">
+            <label for="txEditDateTime">Date & Time</label>
+            <input id="txEditDateTime" type="datetime-local" required>
+          </div>
+          <div class="field">
+            <label for="txEditCategory">Category</label>
+            <select id="txEditCategory" required></select>
+          </div>
+          <div class="field">
+            <label for="txEditAccount">Account</label>
+            <select id="txEditAccount" required></select>
+          </div>
+          <div class="field">
+            <label for="txEditAmount">Amount</label>
+            <input id="txEditAmount" type="number" step="0.01" required>
+          </div>
+          <div class="field">
+            <label for="txEditNote">Note</label>
+            <input id="txEditNote" type="text" placeholder="Transaction note">
+          </div>
+          <button type="submit" class="save-btn">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="action-toast" id="actionToast">
+      <div class="toast-content">
+        <i class="fas fa-check-circle"></i>
+        <span class="toast-message">Saved</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

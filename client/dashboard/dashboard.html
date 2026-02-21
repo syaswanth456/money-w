@@ -1,0 +1,484 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script src="/shared/appearance.js"></script>
+    <title>Money Manager - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="/dashboard/dashboard.css">
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563EB">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+    <!-- Mobile App Container -->
+    <div class="mobile-app" id="mobileView">
+        <!-- Dashboard Page -->
+        <div class="dashboard-page">
+            <!-- Mobile Header -->
+            <header class="mobile-header">
+                <div class="mobile-header-top">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="mobile-logo">
+                        <i class="fas fa-coins"></i>
+                        <span>MoneyManager</span>
+                    </div>
+                    <div class="mobile-header-actions">
+                        <button class="mobile-search-btn" id="mobileSearchBtn" title="Share QR" aria-label="Share QR">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <!-- Install Button (hidden by default, shown when PWA installable) -->
+                        <button class="mobile-install-btn" id="mobileInstallBtn" hidden>
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <!-- QR Mini Button -->
+                        <button class="mobile-qr-btn" id="mobileQrBtn">
+                            <i class="fas fa-qrcode"></i>
+                        </button>
+                        <div class="mobile-notifications" id="mobileNotifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notificationCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mobile-user-greeting">
+                    <!-- Avatar replaced with icon -->
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="greeting-text">
+                        <h1 id="userGreeting">Welcome back!</h1>
+                        <p class="current-date" id="currentDate"></p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="mobile-main-content">
+                <!-- Total Balance Card -->
+                <section class="mobile-balance-section">
+                    <div class="mobile-balance-card glass-card">
+                        <div class="balance-header compact-header">
+                            <h2>Total Balance</h2>
+                            <div class="balance-toggle" id="mobileBalanceToggle">
+                                <i class="fas fa-eye"></i>
+                                <span>Hide</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mobile-balance-amount compact">
+                            <div class="currency">$</div>
+                            <div class="amount" id="mobileBalanceAmount">0.00</div>
+                        </div>
+                        
+                        <div class="balance-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon income">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-label">Monthly Income</span>
+                                    <span class="stat-value positive" id="monthlyIncome">+$0.00</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon expense">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="stat-details">
+                                    <span class="stat-label">Monthly Expense</span>
+                                    <span class="stat-value negative" id="monthlyExpense">-$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="balance-progress">
+                            <div class="progress-label">
+                                <span>Monthly Budget</span>
+                                <span><span id="budgetUsedPercent">0</span>% Used</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="budgetProgressFill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions Grid -->
+                <section class="mobile-quick-actions">
+                    <div class="section-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    
+                    <div class="actions-grid" id="quickActionsGrid">
+                        <!-- Quick actions will be generated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Recent Transactions -->
+                <section class="mobile-transactions">
+                    <div class="section-header">
+                        <h2>Recent Transactions</h2>
+                        <!-- Updated: View All link now uses data-nav -->
+                        <a href="#" class="view-all" data-nav="transactions">All <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    
+                    <div class="transactions-list" id="mobileTransactionsList">
+                        <!-- Transactions will be generated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Financial Insights -->
+                <section class="mobile-insights">
+                    <div class="section-header">
+                        <h2>Financial Insights</h2>
+                        <a href="#" class="view-all">Details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    
+                    <div class="insights-grid" id="insightsGrid">
+                        <!-- Insights will be generated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation (updated with data-nav) -->
+        <nav class="mobile-bottom-nav">
+            <a href="#" class="nav-item active" data-nav="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="accounts">
+                <i class="fas fa-wallet"></i>
+                <span>Accounts</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="categories">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <!-- Mobile Side Menu (updated with data-nav) -->
+        <div class="mobile-side-menu" id="mobileSideMenu">
+            <div class="menu-overlay" id="menuOverlay"></div>
+            <div class="menu-content glass-card">
+                <div class="menu-header">
+                    <div class="menu-user">
+                        <!-- Large avatar replaced with icon -->
+                        <div class="user-avatar large">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <h3 id="menuUserName">User</h3>
+                            <p id="menuUserPlan">Member</p>
+                        </div>
+                    </div>
+                    <button class="menu-close" id="menuClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="menu-items">
+                    <a href="#" class="menu-item" data-nav="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="menu-item" data-nav="accounts">
+                        <i class="fas fa-wallet"></i>
+                        <span>Accounts</span>
+                    </a>
+                    <a href="#" class="menu-item" data-nav="categories">
+                        <i class="fas fa-tags"></i>
+                        <span>Categories</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="badge" id="menuNotificationBadge">0</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                
+                <div class="menu-footer">
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Log Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Popup -->
+        <div class="qr-popup" id="qrPopup">
+            <div class="qr-overlay" id="qrOverlay"></div>
+            <div class="qr-content glass-card">
+                <div class="qr-header">
+                    <h2>Scan & Pay</h2>
+                    <button class="qr-close" id="qrClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="qr-tabs">
+                    <button class="qr-tab active" data-tab="scan">Scan QR</button>
+                    <button class="qr-tab" data-tab="myqr">My QR</button>
+                </div>
+                
+                <!-- Scan QR Tab -->
+                <div class="qr-tab-content active" id="scanTab">
+                    <div class="qr-scanner">
+                        <div class="scanner-placeholder">
+                            <i class="fas fa-qrcode"></i>
+                            <p>Point camera at QR code to scan</p>
+                        </div>
+                        
+                        <button class="mock-scan-btn" id="mockScanBtn">
+                            <i class="fas fa-camera"></i>
+                            Mock Scan
+                        </button>
+                        <div class="manual-transfer-box">
+                            <p class="manual-transfer-title">Or use shared transfer code</p>
+                            <div class="manual-transfer-row">
+                                <input type="text" class="form-input" id="scanCodeInput" placeholder="Enter account transfer code">
+                                <button class="btn-secondary" id="useCodeBtn" type="button">Use Code</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Transfer Form (hidden by default) -->
+                        <div class="transfer-form" id="transferForm">
+                            <div class="form-group">
+                                <label class="form-label">Receiver Account</label>
+                                <input type="text" class="form-input" id="receiverAccount" value="Jane Smith - Savings" readonly>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Amount</label>
+                                <input type="number" class="form-input" id="transferAmount" placeholder="0.00" step="0.01" min="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">From Account</label>
+                                <select class="form-input" id="fromAccount">
+                                    <option value="chase">Chase Checking ($12,450.00)</option>
+                                    <option value="savings">Savings Account ($32,830.75)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="transfer-actions">
+                                <button class="btn-secondary" id="cancelTransfer">Cancel</button>
+                                <button class="btn-primary" id="confirmTransfer">Confirm Transfer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My QR Tab -->
+                <div class="qr-tab-content" id="myqrTab">
+                    <div class="my-qr">
+                        <div class="form-group">
+                            <label class="form-label">Select Account</label>
+                            <select class="account-select" id="qrAccountSelect">
+                                <option value="chase">Chase Checking</option>
+                                <option value="savings">Savings Account</option>
+                                <option value="credit">Credit Card</option>
+                            </select>
+                        </div>
+                        
+                        <div class="qr-code-display">
+                            <div class="qr-pattern" id="qrPattern">
+                                <!-- QR pattern will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="transfer-code-display">
+                            <div class="code-label">Transfer Code</div>
+                            <div class="transfer-code" id="transferCode">7A9B2C</div>
+                            <div class="code-label">Share this code for manual transfers</div>
+                        </div>
+                        
+                        <input type="text" class="manual-code-input" id="manualCodeInput" placeholder="Enter transfer code manually" readonly>
+
+                        <!-- 🔐 Secure share buttons with icons -->
+                        <div class="share-actions" style="display: flex; gap: 8px; margin-top: 16px;">
+                            <button class="btn-primary" id="shareAccountBtn">
+                                <i class="fas fa-share-alt"></i> Share Account
+                            </button>
+                            <button class="btn-secondary" id="copyLinkBtn">
+                                <i class="fas fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="action-toast" id="actionToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Action completed successfully!</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="notificationsModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <div class="modal-title">Notifications</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="modal-close" id="clearAllNotifications" title="Clear all">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <button class="modal-close" id="notificationsClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="notifications-container" id="notificationsList" style="max-height: 400px; overflow-y: auto; padding: 8px 16px;">
+                <!-- Notifications will be injected by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Detail Slideshow Modal -->
+    <div class="modal-overlay" id="notificationDetailModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card notification-detail-content">
+            <div class="modal-header">
+                <div class="modal-title">Notification</div>
+                <button class="modal-close" id="notificationDetailClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="notification-detail-container" id="notificationDetailContainer">
+                <!-- Slides will be injected here -->
+            </div>
+            <div class="notification-detail-footer">
+                <button class="btn-secondary" id="detailPrevBtn" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span id="detailCounter">1 / 3</span>
+                <button class="btn-secondary" id="detailNextBtn">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Remote Access Modals ========== -->
+    <!-- Access Request Modal (for requester) -->
+    <div class="modal-overlay" id="accessRequestModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <div class="modal-title">Remote Access</div>
+                <button class="modal-close" id="accessRequestClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="access-content" id="accessContent">
+                <!-- State 1: Request Access -->
+                <div class="access-request active" id="accessRequestView">
+                    <p class="access-description">You are about to request access to an account. The owner will be notified and will provide a 6‑digit code.</p>
+                    <button class="btn-primary" id="requestAccessBtn">Request Access</button>
+                </div>
+                <!-- State 2: Enter Code -->
+                <div class="access-code" id="accessCodeView" style="display: none;">
+                    <p class="access-description">Enter the 6‑digit code provided by the account owner.</p>
+                    <input type="text" class="form-input" id="accessCodeInput" placeholder="Enter code" maxlength="6" pattern="\d*" inputmode="numeric">
+                    <div class="access-actions" style="display: flex; gap: 8px; margin-top: 16px;">
+                        <button class="btn-primary" id="verifyCodeBtn">Verify</button>
+                        <button class="btn-secondary" id="cancelAccessBtn">Cancel</button>
+                    </div>
+                    <p class="access-error" id="accessError" style="color: var(--danger-red); font-size: 0.8rem; margin-top: 8px; display: none;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Owner Code Modal (shown to the account owner when a request arrives) -->
+    <div class="modal-overlay" id="ownerCodeModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card" style="max-width: 320px;">
+            <div class="modal-header">
+                <div class="modal-title">Access Code</div>
+                <button class="modal-close" id="ownerCodeClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding: 0 16px 20px; text-align: center;">
+                <div id="ownerApproveView">
+                    <p style="margin: 16px 0; color:var(--text-secondary);">New profile access request received.</p>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-primary" id="ownerApproveBtn">Approve</button>
+                        <button class="btn-secondary" id="ownerRejectBtn">Reject</button>
+                    </div>
+                </div>
+                <div id="ownerCodeView" style="display:none;">
+                    <p style="margin: 16px 0 8px; color:var(--text-secondary);">Share this code with the requester:</p>
+                    <div class="access-code-display" style="font-size: 2rem; font-weight: 700; letter-spacing: 4px; color: var(--primary-blue);" id="ownerCodeValue"></div>
+                    <p style="margin-top: 12px; font-size:0.8rem; color:var(--text-light);">Expires in 2 minutes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Access Share Modal (full access sharing) -->
+    <div class="modal-overlay" id="accessShareModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <div class="modal-title">Share Full Access</div>
+                <button class="modal-close" id="accessShareClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="access-share-body">
+                <p class="access-share-text">
+                    Share this link to grant full dashboard access (password change disabled).<br>
+                    <strong>Expires in 15 minutes</strong>
+                </p>
+                <div class="qr-code-display access-share-qr">
+                    <div class="qr-pattern" id="accessShareQr"></div>
+                </div>
+                <input type="text" class="manual-code-input" id="accessShareLink" readonly>
+                <div class="access-share-actions">
+                    <button class="btn-secondary" id="accessCopyBtn"><i class="fas fa-copy"></i> Copy Link</button>
+                    <button class="btn-primary" id="accessNativeShareBtn"><i class="fas fa-share-alt"></i> Share Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/dashboard/dashboard.js" defer></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js").catch(console.error);
+            });
+        }
+    </script>
+</body>
+</html>
+
+

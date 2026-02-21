@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Money Manager - Accounts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="/accounts/accounts.css">
+    <!-- EXTERNAL JS (defer) -->
+    <script src="/accounts/accounts.js" defer></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+<body>
+    <!-- Mobile App Container -->
+    <div class="mobile-app" id="mobileView">
+        <!-- Accounts Page -->
+        <div class="accounts-page">
+            <div class="page-header">
+                <!-- Back button secured with data-nav -->
+                <a href="#" class="back-btn" data-nav="dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="page-title">Accounts</div>
+                <div class="page-actions">
+                    <button class="page-action-btn" id="addAccountBtn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="accounts-header">
+                <div class="accounts-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Assets</div>
+                        <div class="stat-value positive" id="assetsTotal">$0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Liabilities</div>
+                        <div class="stat-value negative" id="liabilitiesTotal">$0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Net Worth</div>
+                        <div class="stat-value positive" id="netWorth">$0.00</div>
+                    </div>
+                </div>
+                
+                <div class="total-balance-card">
+                    <div class="total-balance-label">Total Balance</div>
+                    <div class="total-balance-amount" id="totalBalanceAmount">$0.00</div>
+                </div>
+            </div>
+
+            <div class="accounts-sections">
+                <!-- Assets Sections -->
+                <div class="account-section">
+                    <div class="section-title">
+                        <h3>Cash</h3>
+                        <div class="section-total" id="cashTotal">$0.00</div>
+                    </div>
+                    <div class="accounts-list" id="cashAccounts">
+                        <!-- Cash accounts will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <div class="section-title">
+                        <h3>Bank Accounts</h3>
+                        <div class="section-total" id="bankTotal">$0.00</div>
+                    </div>
+                    <div class="accounts-list" id="bankAccounts">
+                        <!-- Bank accounts will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <div class="section-title">
+                        <h3>Digital Wallets</h3>
+                        <div class="section-total" id="walletTotal">$0.00</div>
+                    </div>
+                    <div class="accounts-list" id="walletAccounts">
+                        <!-- Wallet accounts will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Liabilities Sections -->
+                <div class="account-section">
+                    <div class="section-title">
+                        <h3>Credit Cards</h3>
+                        <div class="section-total" id="creditCardTotal">$0.00</div>
+                    </div>
+                    <div class="accounts-list" id="creditCardAccounts">
+                        <!-- Credit card accounts will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <div class="section-title">
+                        <h3>Loans</h3>
+                        <div class="section-total" id="loanTotal">$0.00</div>
+                    </div>
+                    <div class="accounts-list" id="loanAccounts">
+                        <!-- Loan accounts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation (secured) -->
+        <nav class="mobile-bottom-nav">
+            <a href="#" class="nav-item" data-nav="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item active" data-nav="accounts">
+                <i class="fas fa-wallet"></i>
+                <span>Accounts</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="categories">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <!-- Mobile Side Menu (secured) -->
+        <div class="mobile-side-menu" id="mobileSideMenu">
+            <div class="menu-overlay" id="menuOverlay"></div>
+            <div class="menu-content glass-card">
+                <div class="menu-header">
+                    <div class="menu-user">
+                        <!-- Avatar replaced with icon -->
+                        <div class="user-avatar large">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <h3 id="menuUserName">Alex Morgan</h3>
+                            <p id="menuUserPlan">Premium Member</p>
+                        </div>
+                    </div>
+                    <button class="menu-close" id="menuClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="menu-items">
+                    <a href="#" class="menu-item" data-nav="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="menu-item" data-nav="accounts">
+                        <i class="fas fa-wallet"></i>
+                        <span>Accounts</span>
+                    </a>
+                    <a href="#" class="menu-item" data-nav="categories">
+                        <i class="fas fa-tags"></i>
+                        <span>Categories</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="badge" id="menuNotificationBadge">0</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                
+                <div class="menu-footer">
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Log Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Account Modal (IDs already present) -->
+    <div class="modal-overlay" id="editAccountModal">
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="editAccountModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Add New Account</h3>
+            <form class="edit-form" id="editAccountForm">
+                <div class="form-group">
+                    <label for="editAccountName">Account Name</label>
+                    <input type="text" id="editAccountName" required placeholder="e.g., Chase Checking">
+                </div>
+                <div class="form-group">
+                    <label for="editAccountType">Account Type</label>
+                    <select id="editAccountType">
+                        <option value="cash">Cash</option>
+                        <option value="bank">Bank Account</option>
+                        <option value="wallet">Digital Wallet</option>
+                        <option value="credit">Credit Card</option>
+                        <option value="loan">Loan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editAccountBalance">Current Balance</label>
+                    <input type="number" id="editAccountBalance" step="0.01" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="editAccountLimit">Credit Limit (if applicable)</label>
+                    <input type="number" id="editAccountLimit" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="editAccountNote">Note (Optional)</label>
+                    <textarea id="editAccountNote" rows="3" placeholder="Add any notes about this account"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    <span>Save Account</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="action-toast" id="actionToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Action completed successfully!</span>
+        </div>
+    </div>
+</body>
+</html>

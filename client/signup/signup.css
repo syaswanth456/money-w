@@ -1,0 +1,787 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    color: #333;
+    perspective: 1000px;
+}
+
+/* Mobile Layout */
+.mobile-container {
+    width: 100%;
+    max-width: 400px;
+    height: 750px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    background: white;
+    margin: 20px;
+}
+
+/* Desktop Layout */
+.desktop-container {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    height: 750px;
+    position: relative;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+}
+
+.bg-texture {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 15% 50%, rgba(110, 203, 245, 0.05) 0%, transparent 20%),
+                      radial-gradient(circle at 85% 30%, rgba(110, 203, 245, 0.03) 0%, transparent 20%);
+    z-index: 0;
+}
+
+/* Cards Container */
+.cards-container {
+    position: relative;
+    width: 360px;
+    height: 520px;
+    z-index: 10;
+}
+
+.credit-card {
+    position: absolute;
+    width: 360px;
+    height: 225px;
+    background: linear-gradient(145deg, #6ECBF5 0%, #0596D7 40%, #037AB3 100%);
+    border-radius: 24px;
+    box-shadow: 
+        0 12px 24px rgba(0, 120, 215, 0.2),
+        0 6px 12px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(120%) rotateX(10deg);
+    transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+}
+
+.card-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.05;
+    border-radius: 24px;
+}
+
+.card-gloss {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 70%);
+    transform: rotate(25deg);
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.card-chip {
+    position: absolute;
+    top: 40px;
+    left: 30px;
+    width: 50px;
+    height: 40px;
+    background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chip-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+        repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(0, 0, 0, 0.1) 5px, rgba(0, 0, 0, 0.1) 7px);
+}
+
+.card-number {
+    position: absolute;
+    top: 100px;
+    left: 30px;
+    font-size: 22px;
+    letter-spacing: 2px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.card-number span {
+    margin: 0 10px;
+}
+
+.card-holder {
+    position: absolute;
+    bottom: 40px;
+    left: 30px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.card-logo {
+    position: absolute;
+    bottom: 40px;
+    right: 30px;
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: 1px;
+}
+
+/* Create Account Form Container */
+.create-form-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 360px;
+    height: 580px;
+    z-index: 100;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+    pointer-events: none;
+}
+
+.create-form-container.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: all;
+}
+
+.create-form {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.15),
+        0 8px 16px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s;
+}
+
+.create-form-container.visible .create-form {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 10px;
+}
+
+/* Google Button with Official Google Logo */
+.google-btn {
+    width: 100%;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #3c4043;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.google-btn:hover {
+    background: #f8f9fa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    border-color: #d2e3fc;
+}
+
+.google-btn:active {
+    transform: scale(0.96);
+    background: #f1f3f4;
+}
+
+.google-logo {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e1e5e9;
+}
+
+.divider span {
+    padding: 0 15px;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    transition: color 0.3s;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px 45px 16px 45px;
+    background: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    border-radius: 12px;
+    font-size: 16px;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #6ECBF5;
+    box-shadow: 0 0 0 3px rgba(110, 203, 245, 0.15);
+    background: #fff;
+}
+
+.input-group input:focus + i {
+    color: #0596D7;
+}
+
+.input-group input::placeholder {
+    color: #aaa;
+}
+
+/* Form Links */
+.form-links {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+    padding: 0 5px;
+}
+
+.form-link {
+    color: #0596D7;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.form-link:hover {
+    color: #037AB3;
+    text-decoration: underline;
+}
+.form-link:active {
+    transform: scale(0.96);
+}
+
+/* Create Account Button */
+.create-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(145deg, #0596D7 0%, #037AB3 100%);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 8px 20px rgba(3, 122, 179, 0.2);
+}
+
+.create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(3, 122, 179, 0.3);
+}
+
+.create-btn:active {
+    transform: scale(0.96);
+}
+
+/* Terms Checkbox */
+.terms-checkbox {
+    display: flex;
+    align-items: flex-start;
+    margin: 15px 0 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.terms-checkbox input {
+    margin-right: 10px;
+    margin-top: 3px;
+    accent-color: #0596D7;
+}
+
+.terms-checkbox a {
+    color: #0596D7;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.terms-checkbox a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.form-footer {
+    text-align: center;
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+@keyframes subtle-glow {
+    0%, 100% { 
+        box-shadow: 0 12px 24px rgba(0, 120, 215, 0.2), 
+                    0 6px 12px rgba(0, 0, 0, 0.08), 
+                    0 0 0 1px rgba(255, 255, 255, 0.3); 
+    }
+    50% { 
+        box-shadow: 0 16px 32px rgba(0, 120, 215, 0.25), 
+                    0 8px 16px rgba(0, 0, 0, 0.1), 
+                    0 0 0 1px rgba(255, 255, 255, 0.4); 
+    }
+}
+
+.card-1 { z-index: 30; transform-origin: center; }
+.card-2 { z-index: 20; transform-origin: center; }
+.card-3 { z-index: 10; transform-origin: center; }
+
+/* Active states for animation */
+.card-1.active {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+    animation: subtle-glow 2s infinite alternate ease-in-out;
+}
+
+.card-2.active {
+    opacity: 0.85;
+    transform: translateY(60px) scale(0.95) rotateX(0);
+}
+
+.card-3.active {
+    opacity: 0.7;
+    transform: translateY(120px) scale(0.9) rotateX(0);
+}
+
+.card-expanded {
+    height: 580px !important;
+    animation: pulse 0.4s ease-in-out;
+    z-index: 50;
+}
+
+/* App header */
+.app-header {
+    position: absolute;
+    top: 20px;
+    text-align: center;
+    width: 100%;
+    z-index: 5;
+}
+
+.app-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #037AB3;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.app-tagline {
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+}
+
+/* Desktop Layout */
+.desktop-content {
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.desktop-app-header {
+    margin-bottom: 40px;
+    text-align: center;
+    width: 100%;
+}
+
+.desktop-app-logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: #037AB3;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.desktop-app-tagline {
+    font-size: 16px;
+    color: #666;
+    font-weight: 400;
+}
+
+/* Form close button */
+.close-form {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    border: none;
+    color: #666;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 101;
+}
+
+.close-form:hover {
+    background: #e9ecef;
+    color: #333;
+}
+.close-form:active {
+    transform: scale(0.95);
+}
+
+/* Password Strength Container - COLLAPSIBLE DESIGN */
+.password-strength-container {
+    margin-top: 5px;
+    padding: 0;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e1e5e9;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.password-strength-container.expanded {
+    max-height: 200px;
+    opacity: 1;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.strength-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #f1f3f4;
+    transition: all 0.3s;
+}
+
+.strength-header:hover {
+    background: #e8eaed;
+}
+
+.strength-header.collapsed {
+    margin-bottom: 0;
+}
+
+.strength-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.strength-icon {
+    font-size: 12px;
+    transition: transform 0.3s;
+}
+
+.strength-header.expanded .strength-icon {
+    transform: rotate(180deg);
+}
+
+.strength-text {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.strength-bar {
+    height: 6px;
+    background: #e1e5e9;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Password Requirements */
+.requirements-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: #666;
+}
+
+.requirement-icon {
+    margin-right: 8px;
+    font-size: 10px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e1e5e9;
+    color: #fff;
+}
+
+.requirement-icon.valid {
+    background: #2ed573;
+}
+
+.requirement-icon.invalid {
+    background: #e1e5e9;
+}
+
+.requirement-text {
+    flex: 1;
+}
+
+/* Strength Colors */
+.strength-weak .strength-fill { background: linear-gradient(to right, #ff4757, #ff3838); }
+.strength-fair .strength-fill { background: linear-gradient(to right, #ffa502, #ff7f00); }
+.strength-good .strength-fill { background: linear-gradient(to right, #2ed573, #1dd1a1); }
+.strength-strong .strength-fill { background: linear-gradient(to right, #2ed573, #00b894); }
+
+.strength-weak .strength-text { color: #ff4757; }
+.strength-fair .strength-text { color: #ffa502; }
+.strength-good .strength-text { color: #2ed573; }
+.strength-strong .strength-text { color: #00b894; }
+
+/* Tap Instruction */
+.tap-instruction {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 60;
+    white-space: nowrap;
+}
+
+.credit-card.active:hover .tap-instruction {
+    opacity: 1;
+}
+
+/* Password Match Indicator */
+.password-match {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+    padding: 5px 0;
+    display: none;
+}
+
+.match-icon {
+    margin-right: 5px;
+    font-size: 10px;
+}
+
+.match-valid {
+    color: #2ed573;
+}
+
+.match-invalid {
+    color: #ff4757;
+}
+
+/* Password Toggle Visibility */
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s, transform 0.15s ease;
+    z-index: 2;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #0596D7;
+}
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+/* Mini Strength Indicator */
+.mini-strength-indicator {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    font-size: 11px;
+    color: #666;
+    gap: 6px;
+}
+
+.mini-strength-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e1e5e9;
+}
+
+.mini-strength-dot.active {
+    background: #2ed573;
+}
+
+.mini-strength-text {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (min-width: 1024px) {
+    body {
+        background-color: #eef2f6;  /* neutral background outside app */
+        background-image: none;      /* remove gradient */
+    }
+    .mobile-container {
+        display: none;
+    }
+    .desktop-container {
+        display: block;
+    }
+}
+
+@media (max-width: 1023px) {
+    .mobile-container {
+        display: flex;
+    }
+    .desktop-container {
+        display: none;
+    }
+}

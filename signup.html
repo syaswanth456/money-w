@@ -1,0 +1,2059 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Create Account | Money Manager Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: #333;
+            perspective: 1000px;
+        }
+
+        /* Mobile Layout */
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            height: 750px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            background: white;
+            margin: 20px;
+        }
+
+        /* Desktop Layout */
+        .desktop-container {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            height: 750px;
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+        }
+
+        .bg-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 15% 50%, rgba(110, 203, 245, 0.05) 0%, transparent 20%),
+                              radial-gradient(circle at 85% 30%, rgba(110, 203, 245, 0.03) 0%, transparent 20%);
+            z-index: 0;
+        }
+
+        /* Cards Container */
+        .cards-container {
+            position: relative;
+            width: 360px;
+            height: 520px;
+            z-index: 10;
+        }
+
+        .credit-card {
+            position: absolute;
+            width: 360px;
+            height: 225px;
+            background: linear-gradient(145deg, #6ECBF5 0%, #0596D7 40%, #037AB3 100%);
+            border-radius: 24px;
+            box-shadow: 
+                0 12px 24px rgba(0, 120, 215, 0.2),
+                0 6px 12px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(120%) rotateX(10deg);
+            transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+        }
+
+        .card-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.05;
+            border-radius: 24px;
+        }
+
+        .card-gloss {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 70%);
+            transform: rotate(25deg);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .card-chip {
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .chip-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(0, 0, 0, 0.1) 5px, rgba(0, 0, 0, 0.1) 7px);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 100px;
+            left: 30px;
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-number span {
+            margin: 0 10px;
+        }
+
+        .card-holder {
+            position: absolute;
+            bottom: 40px;
+            left: 30px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .card-logo {
+            position: absolute;
+            bottom: 40px;
+            right: 30px;
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: 1px;
+        }
+
+        /* Create Account Form Container */
+        .create-form-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 360px;
+            height: 580px;
+            z-index: 100;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .create-form-container.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        .create-form {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s;
+        }
+
+        .create-form-container.visible .create-form {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        /* Google Button with Official Google Logo */
+        .google-btn {
+            width: 100%;
+            padding: 16px;
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #3c4043;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            border-color: #d2e3fc;
+        }
+
+        .google-btn:active {
+            background: #f1f3f4;
+        }
+
+        .google-logo {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e1e5e9;
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            transition: color 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 45px 16px 45px;
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #6ECBF5;
+            box-shadow: 0 0 0 3px rgba(110, 203, 245, 0.15);
+            background: #fff;
+        }
+
+        .input-group input:focus + i {
+            color: #0596D7;
+        }
+
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+
+        /* Form Links */
+        .form-links {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+            padding: 0 5px;
+        }
+
+        .form-link {
+            color: #0596D7;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .form-link:hover {
+            color: #037AB3;
+            text-decoration: underline;
+        }
+
+        /* Create Account Button */
+        .create-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(145deg, #0596D7 0%, #037AB3 100%);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(3, 122, 179, 0.2);
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(3, 122, 179, 0.3);
+        }
+
+        .create-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Terms Checkbox */
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .terms-checkbox input {
+            margin-right: 10px;
+            margin-top: 3px;
+            accent-color: #0596D7;
+        }
+
+        .terms-checkbox a {
+            color: #0596D7;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .form-footer {
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes subtle-glow {
+            0%, 100% { 
+                box-shadow: 0 12px 24px rgba(0, 120, 215, 0.2), 
+                            0 6px 12px rgba(0, 0, 0, 0.08), 
+                            0 0 0 1px rgba(255, 255, 255, 0.3); 
+            }
+            50% { 
+                box-shadow: 0 16px 32px rgba(0, 120, 215, 0.25), 
+                            0 8px 16px rgba(0, 0, 0, 0.1), 
+                            0 0 0 1px rgba(255, 255, 255, 0.4); 
+            }
+        }
+
+        .card-1 { z-index: 30; transform-origin: center; }
+        .card-2 { z-index: 20; transform-origin: center; }
+        .card-3 { z-index: 10; transform-origin: center; }
+
+        /* Active states for animation */
+        .card-1.active {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+            animation: subtle-glow 2s infinite alternate ease-in-out;
+        }
+
+        .card-2.active {
+            opacity: 0.85;
+            transform: translateY(60px) scale(0.95) rotateX(0);
+        }
+
+        .card-3.active {
+            opacity: 0.7;
+            transform: translateY(120px) scale(0.9) rotateX(0);
+        }
+
+        .card-expanded {
+            height: 580px !important;
+            animation: pulse 0.4s ease-in-out;
+            z-index: 50;
+        }
+
+        /* App header */
+        .app-header {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+            width: 100%;
+            z-index: 5;
+        }
+
+        .app-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #037AB3;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .app-tagline {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Desktop Layout */
+        .desktop-content {
+            width: 100%;
+            height: 100%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .desktop-app-header {
+            margin-bottom: 40px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .desktop-app-logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #037AB3;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .desktop-app-tagline {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Form close button */
+        .close-form {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            border: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 101;
+        }
+
+        .close-form:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        /* Password Strength Container - NEW COLLAPSIBLE DESIGN */
+        .password-strength-container {
+            margin-top: 5px;
+            padding: 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e1e5e9;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        .password-strength-container.expanded {
+            max-height: 200px;
+            opacity: 1;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .strength-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            background: #f1f3f4;
+            transition: all 0.3s;
+        }
+
+        .strength-header:hover {
+            background: #e8eaed;
+        }
+
+        .strength-header.collapsed {
+            margin-bottom: 0;
+        }
+
+        .strength-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .strength-icon {
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        .strength-header.expanded .strength-icon {
+            transform: rotate(180deg);
+        }
+
+        .strength-text {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .strength-bar {
+            height: 6px;
+            background: #e1e5e9;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        /* Password Requirements */
+        .requirements-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .requirement-icon {
+            margin-right: 8px;
+            font-size: 10px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e1e5e9;
+            color: #fff;
+        }
+
+        .requirement-icon.valid {
+            background: #2ed573;
+        }
+
+        .requirement-icon.invalid {
+            background: #e1e5e9;
+        }
+
+        .requirement-text {
+            flex: 1;
+        }
+
+        /* Strength Colors */
+        .strength-weak .strength-fill { background: linear-gradient(to right, #ff4757, #ff3838); }
+        .strength-fair .strength-fill { background: linear-gradient(to right, #ffa502, #ff7f00); }
+        .strength-good .strength-fill { background: linear-gradient(to right, #2ed573, #1dd1a1); }
+        .strength-strong .strength-fill { background: linear-gradient(to right, #2ed573, #00b894); }
+
+        .strength-weak .strength-text { color: #ff4757; }
+        .strength-fair .strength-text { color: #ffa502; }
+        .strength-good .strength-text { color: #2ed573; }
+        .strength-strong .strength-text { color: #00b894; }
+
+        /* Tap Instruction */
+        .tap-instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 60;
+            white-space: nowrap;
+        }
+
+        .credit-card.active:hover .tap-instruction {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (min-width: 1024px) {
+            .mobile-container {
+                display: none;
+            }
+            
+            .desktop-container {
+                display: block;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .mobile-container {
+                display: flex;
+            }
+            
+            .desktop-container {
+                display: none;
+            }
+        }
+
+        /* Password Match Indicator */
+        .password-match {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+            padding: 5px 0;
+            display: none;
+        }
+
+        .match-icon {
+            margin-right: 5px;
+            font-size: 10px;
+        }
+
+        .match-valid {
+            color: #2ed573;
+        }
+
+        .match-invalid {
+            color: #ff4757;
+        }
+
+        /* Password Toggle Visibility - FIXED POSITION */
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.3s;
+            z-index: 2;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: #0596D7;
+        }
+
+        /* Mini Strength Indicator */
+        .mini-strength-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            font-size: 11px;
+            color: #666;
+            gap: 6px;
+        }
+
+        .mini-strength-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e1e5e9;
+        }
+
+        .mini-strength-dot.active {
+            background: #2ed573;
+        }
+
+        .mini-strength-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Layout -->
+    <div class="mobile-container" id="mobileView">
+        <div class="bg-texture"></div>
+        
+        <div class="app-header">
+            <div class="app-logo">MONEY MANAGER</div>
+            <div class="app-tagline">Premium Digital Platform</div>
+        </div>
+        
+        <div class="cards-container">
+            <!-- Third Card (Back) -->
+            <div class="credit-card card-3">
+                <div class="card-texture"></div>
+                <div class="card-gloss"></div>
+                <div class="card-chip">
+                    <div class="chip-lines"></div>
+                </div>
+                <div class="card-number">
+                    <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                </div>
+                <div class="card-holder">NEW ACCOUNT</div>
+                <div class="card-logo">MM</div>
+            </div>
+            
+            <!-- Second Card (Middle) -->
+            <div class="credit-card card-2">
+                <div class="card-texture"></div>
+                <div class="card-gloss"></div>
+                <div class="card-chip">
+                    <div class="chip-lines"></div>
+                </div>
+                <div class="card-number">
+                    <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                </div>
+                <div class="card-holder">NEW ACCOUNT</div>
+                <div class="card-logo">MM</div>
+            </div>
+            
+            <!-- First Card (Front) -->
+            <div class="credit-card card-1" id="frontCard">
+                <div class="card-texture"></div>
+                <div class="card-gloss"></div>
+                <div class="card-chip">
+                    <div class="chip-lines"></div>
+                </div>
+                <div class="card-number">
+                    <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                </div>
+                <div class="card-holder">NEW ACCOUNT</div>
+                <div class="card-logo">MM</div>
+                <div class="tap-instruction">Tap to create account</div>
+            </div>
+            
+            <!-- Create Account Form Container -->
+            <div class="create-form-container" id="createFormContainer">
+                <button class="close-form" id="closeFormBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="create-form">
+                    <h2 class="form-title">Create Your Account</h2>
+                    
+                    <!-- Google Sign-Up Button with Official Logo -->
+                    <button class="google-btn" id="googleSignUp">
+                        <div class="google-logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                        </div>
+                        <span>Sign up with Google</span>
+                    </button>
+                    
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>or sign up with email</span>
+                    </div>
+                    
+                    <!-- Full Name Input -->
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Full Name" id="fullName">
+                    </div>
+                    
+                    <!-- Email Input -->
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email address" id="email">
+                    </div>
+                    
+                    <!-- Password Input -->
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" id="password" name="password">
+                        <button class="password-toggle" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Mini Strength Indicator (Always visible) -->
+                    <div class="mini-strength-indicator" id="miniStrengthIndicator">
+                        <div class="mini-strength-dot" id="miniDot1"></div>
+                        <div class="mini-strength-dot" id="miniDot2"></div>
+                        <div class="mini-strength-dot" id="miniDot3"></div>
+                        <div class="mini-strength-dot" id="miniDot4"></div>
+                        <div class="mini-strength-dot" id="miniDot5"></div>
+                        <div class="mini-strength-text" id="miniStrengthText">Password strength</div>
+                    </div>
+                    
+                    <!-- Collapsible Password Strength Analysis -->
+                    <div class="password-strength-container" id="passwordStrength">
+                        <div class="strength-header collapsed" id="strengthHeader">
+                            <div class="strength-title">
+                                <i class="fas fa-chevron-down strength-icon"></i>
+                                <span>Password Strength Analysis</span>
+                            </div>
+                            <div class="strength-text" id="strengthText">Weak</div>
+                        </div>
+                        <div class="strength-content" id="strengthContent">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <ul class="requirements-list" id="requirementsList">
+                                <li class="requirement-item">
+                                    <span class="requirement-icon invalid" id="reqLength">✓</span>
+                                    <span class="requirement-text">At least 8 characters</span>
+                                </li>
+                                <li class="requirement-item">
+                                    <span class="requirement-icon invalid" id="reqUppercase">✓</span>
+                                    <span class="requirement-text">At least one uppercase letter</span>
+                                </li>
+                                <li class="requirement-item">
+                                    <span class="requirement-icon invalid" id="reqLowercase">✓</span>
+                                    <span class="requirement-text">At least one lowercase letter</span>
+                                </li>
+                                <li class="requirement-item">
+                                    <span class="requirement-icon invalid" id="reqNumber">✓</span>
+                                    <span class="requirement-text">At least one number</span>
+                                </li>
+                                <li class="requirement-item">
+                                    <span class="requirement-icon invalid" id="reqSpecial">✓</span>
+                                    <span class="requirement-text">At least one special character</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirm Password Input -->
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Confirm Password" id="confirmPassword">
+                        <button class="password-toggle" type="button" id="toggleConfirmPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Password Match Indicator -->
+                    <div class="password-match" id="passwordMatch">
+                        <span class="match-icon">✓</span>
+                        <span class="match-text">Passwords match</span>
+                    </div>
+                    
+                    <!-- Terms & Conditions Checkbox -->
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="termsCheckbox">
+                        <label for="termsCheckbox">
+                            I agree to the <a href="#" id="termsLink">Terms & Conditions</a> and <a href="#" id="privacyLink">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <!-- Create Account Button -->
+                    <button class="create-btn" id="createAccountButton">Create Account</button>
+                    
+                    <!-- Form Links -->
+                    <div class="form-links">
+                        <button class="form-link" id="loginLink">Already have an account? Log In</button>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="form-footer">
+                        <p>Secured by 256-bit encryption • © 2023 Money Manager</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Layout -->
+    <div class="desktop-container" id="desktopView">
+        <div class="bg-texture"></div>
+        
+        <div class="desktop-content">
+            <div class="desktop-app-header">
+                <div class="desktop-app-logo">MONEY MANAGER</div>
+                <div class="desktop-app-tagline">Premium Digital Platform</div>
+            </div>
+            
+            <div class="cards-container">
+                <!-- Third Card (Back) -->
+                <div class="credit-card card-3">
+                    <div class="card-texture"></div>
+                    <div class="card-gloss"></div>
+                    <div class="card-chip">
+                        <div class="chip-lines"></div>
+                    </div>
+                    <div class="card-number">
+                        <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                    </div>
+                    <div class="card-holder">NEW ACCOUNT</div>
+                    <div class="card-logo">MM</div>
+                </div>
+                
+                <!-- Second Card (Middle) -->
+                <div class="credit-card card-2">
+                    <div class="card-texture"></div>
+                    <div class="card-gloss"></div>
+                    <div class="card-chip">
+                        <div class="chip-lines"></div>
+                    </div>
+                    <div class="card-number">
+                        <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                    </div>
+                    <div class="card-holder">NEW ACCOUNT</div>
+                    <div class="card-logo">MM</div>
+                </div>
+                
+                <!-- First Card (Front) -->
+                <div class="credit-card card-1" id="frontCardDesktop">
+                    <div class="card-texture"></div>
+                    <div class="card-gloss"></div>
+                    <div class="card-chip">
+                        <div class="chip-lines"></div>
+                    </div>
+                    <div class="card-number">
+                        <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                    </div>
+                    <div class="card-holder">NEW ACCOUNT</div>
+                    <div class="card-logo">MM</div>
+                    <div class="tap-instruction">Click to create account</div>
+                </div>
+                
+                <!-- Create Account Form Container -->
+                <div class="create-form-container" id="createFormContainerDesktop">
+                    <button class="close-form" id="closeFormBtnDesktop">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="create-form">
+                        <h2 class="form-title">Create Your Account</h2>
+                        
+                        <!-- Google Sign-Up Button with Official Logo -->
+                        <button class="google-btn" id="googleSignUpDesktop">
+                            <div class="google-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <span>Sign up with Google</span>
+                        </button>
+                        
+                        <!-- Divider -->
+                        <div class="divider">
+                            <span>or sign up with email</span>
+                        </div>
+                        
+                        <!-- Full Name Input -->
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Full Name" id="fullNameDesktop">
+                        </div>
+                        
+                        <!-- Email Input -->
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email address" id="emailDesktop">
+                        </div>
+                        
+                        <!-- Password Input -->
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" id="passwordDesktop" name="password">
+                            <button class="password-toggle" type="button" id="togglePasswordDesktop">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Mini Strength Indicator (Always visible) -->
+                        <div class="mini-strength-indicator" id="miniStrengthIndicatorDesktop">
+                            <div class="mini-strength-dot" id="miniDot1Desktop"></div>
+                            <div class="mini-strength-dot" id="miniDot2Desktop"></div>
+                            <div class="mini-strength-dot" id="miniDot3Desktop"></div>
+                            <div class="mini-strength-dot" id="miniDot4Desktop"></div>
+                            <div class="mini-strength-dot" id="miniDot5Desktop"></div>
+                            <div class="mini-strength-text" id="miniStrengthTextDesktop">Password strength</div>
+                        </div>
+                        
+                        <!-- Collapsible Password Strength Analysis -->
+                        <div class="password-strength-container" id="passwordStrengthDesktop">
+                            <div class="strength-header collapsed" id="strengthHeaderDesktop">
+                                <div class="strength-title">
+                                    <i class="fas fa-chevron-down strength-icon"></i>
+                                    <span>Password Strength Analysis</span>
+                                </div>
+                                <div class="strength-text" id="strengthTextDesktop">Weak</div>
+                            </div>
+                            <div class="strength-content" id="strengthContentDesktop">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFillDesktop"></div>
+                                </div>
+                                <ul class="requirements-list" id="requirementsListDesktop">
+                                    <li class="requirement-item">
+                                        <span class="requirement-icon invalid" id="reqLengthDesktop">✓</span>
+                                        <span class="requirement-text">At least 8 characters</span>
+                                    </li>
+                                    <li class="requirement-item">
+                                        <span class="requirement-icon invalid" id="reqUppercaseDesktop">✓</span>
+                                        <span class="requirement-text">At least one uppercase letter</span>
+                                    </li>
+                                    <li class="requirement-item">
+                                        <span class="requirement-icon invalid" id="reqLowercaseDesktop">✓</span>
+                                        <span class="requirement-text">At least one lowercase letter</span>
+                                    </li>
+                                    <li class="requirement-item">
+                                        <span class="requirement-icon invalid" id="reqNumberDesktop">✓</span>
+                                        <span class="requirement-text">At least one number</span>
+                                    </li>
+                                    <li class="requirement-item">
+                                        <span class="requirement-icon invalid" id="reqSpecialDesktop">✓</span>
+                                        <span class="requirement-text">At least one special character</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Confirm Password Input -->
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Confirm Password" id="confirmPasswordDesktop">
+                            <button class="password-toggle" type="button" id="toggleConfirmPasswordDesktop">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Password Match Indicator -->
+                        <div class="password-match" id="passwordMatchDesktop">
+                            <span class="match-icon">✓</span>
+                            <span class="match-text">Passwords match</span>
+                        </div>
+                        
+                        <!-- Terms & Conditions Checkbox -->
+                        <div class="terms-checkbox">
+                            <input type="checkbox" id="termsCheckboxDesktop">
+                            <label for="termsCheckboxDesktop">
+                                I agree to the <a href="#" id="termsLinkDesktop">Terms & Conditions</a> and <a href="#" id="privacyLinkDesktop">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <!-- Create Account Button -->
+                        <button class="create-btn" id="createAccountButtonDesktop">Create Account</button>
+                        
+                        <!-- Form Links -->
+                        <div class="form-links">
+                            <button class="form-link" id="loginLinkDesktop">Already have an account? Log In</button>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div class="form-footer">
+                            <p>Secured by 256-bit encryption • © 2023 Money Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password analysis function
+            function analyzePassword(password) {
+                const analysis = {
+                    length: password.length >= 8,
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /[0-9]/.test(password),
+                    special: /[^A-Za-z0-9]/.test(password)
+                };
+                
+                // Calculate strength percentage
+                let strength = 0;
+                const requirements = Object.values(analysis);
+                requirements.forEach(req => {
+                    if (req) strength += 20;
+                });
+                
+                // Add bonus for length
+                if (password.length >= 12) strength += 10;
+                if (password.length >= 16) strength += 10;
+                
+                // Cap at 100%
+                strength = Math.min(strength, 100);
+                
+                // Determine strength level
+                let level = 'weak';
+                let levelClass = 'strength-weak';
+                
+                if (strength >= 80) {
+                    level = 'strong';
+                    levelClass = 'strength-strong';
+                } else if (strength >= 60) {
+                    level = 'good';
+                    levelClass = 'strength-good';
+                } else if (strength >= 40) {
+                    level = 'fair';
+                    levelClass = 'strength-fair';
+                }
+                
+                return {
+                    analysis,
+                    strength,
+                    level,
+                    levelClass
+                };
+            }
+            
+            // Update password strength UI
+            function updatePasswordStrengthUI(password, isMobile = true) {
+                const result = analyzePassword(password);
+                const prefix = isMobile ? '' : 'Desktop';
+                
+                // Update strength bar
+                const strengthFill = document.getElementById(`strengthFill${prefix}`);
+                const strengthText = document.getElementById(`strengthText${prefix}`);
+                const strengthContainer = document.getElementById(`passwordStrength${prefix}`);
+                
+                strengthFill.style.width = `${result.strength}%`;
+                strengthText.textContent = result.level.charAt(0).toUpperCase() + result.level.slice(1);
+                
+                // Update container class
+                strengthContainer.className = `password-strength-container ${result.levelClass}`;
+                
+                // Update requirement icons
+                const requirements = {
+                    length: document.getElementById(`reqLength${prefix}`),
+                    uppercase: document.getElementById(`reqUppercase${prefix}`),
+                    lowercase: document.getElementById(`reqLowercase${prefix}`),
+                    number: document.getElementById(`reqNumber${prefix}`),
+                    special: document.getElementById(`reqSpecial${prefix}`)
+                };
+                
+                Object.keys(result.analysis).forEach(key => {
+                    const icon = requirements[key];
+                    if (icon) {
+                        if (result.analysis[key]) {
+                            icon.classList.remove('invalid');
+                            icon.classList.add('valid');
+                        } else {
+                            icon.classList.remove('valid');
+                            icon.classList.add('invalid');
+                        }
+                    }
+                });
+                
+                // Update mini strength indicator
+                updateMiniStrengthIndicator(password, isMobile);
+                
+                return result;
+            }
+            
+            // Update mini strength indicator
+            function updateMiniStrengthIndicator(password, isMobile = true) {
+                const prefix = isMobile ? '' : 'Desktop';
+                const result = analyzePassword(password);
+                
+                const dots = [
+                    document.getElementById(`miniDot1${prefix}`),
+                    document.getElementById(`miniDot2${prefix}`),
+                    document.getElementById(`miniDot3${prefix}`),
+                    document.getElementById(`miniDot4${prefix}`),
+                    document.getElementById(`miniDot5${prefix}`)
+                ];
+                
+                const text = document.getElementById(`miniStrengthText${prefix}`);
+                
+                // Reset all dots
+                dots.forEach(dot => {
+                    dot.classList.remove('active');
+                    dot.style.backgroundColor = '#e1e5e9';
+                });
+                
+                // Activate dots based on strength
+                const activeDots = Math.ceil(result.strength / 20);
+                for (let i = 0; i < activeDots && i < dots.length; i++) {
+                    dots[i].classList.add('active');
+                    
+                    // Color the dots based on strength
+                    if (result.strength < 40) {
+                        dots[i].style.backgroundColor = '#ff4757';
+                    } else if (result.strength < 60) {
+                        dots[i].style.backgroundColor = '#ffa502';
+                    } else if (result.strength < 80) {
+                        dots[i].style.backgroundColor = '#2ed573';
+                    } else {
+                        dots[i].style.backgroundColor = '#00b894';
+                    }
+                }
+                
+                // Update text
+                if (password.length === 0) {
+                    text.textContent = 'Password strength';
+                    text.style.color = '#666';
+                } else {
+                    text.textContent = result.level.charAt(0).toUpperCase() + result.level.slice(1);
+                    
+                    // Color the text based on strength
+                    if (result.strength < 40) {
+                        text.style.color = '#ff4757';
+                    } else if (result.strength < 60) {
+                        text.style.color = '#ffa502';
+                    } else if (result.strength < 80) {
+                        text.style.color = '#2ed573';
+                    } else {
+                        text.style.color = '#00b894';
+                    }
+                }
+            }
+            
+            // Update password match indicator
+            function updatePasswordMatchUI(password, confirmPassword, isMobile = true) {
+                const prefix = isMobile ? '' : 'Desktop';
+                const matchElement = document.getElementById(`passwordMatch${prefix}`);
+                const matchIcon = matchElement.querySelector('.match-icon');
+                const matchText = matchElement.querySelector('.match-text');
+                
+                if (!confirmPassword) {
+                    matchElement.style.display = 'none';
+                    return false;
+                }
+                
+                matchElement.style.display = 'flex';
+                
+                if (password === confirmPassword) {
+                    matchIcon.className = 'match-icon match-valid';
+                    matchText.textContent = 'Passwords match';
+                    matchText.className = 'match-text match-valid';
+                    return true;
+                } else {
+                    matchIcon.className = 'match-icon match-invalid';
+                    matchText.textContent = 'Passwords do not match';
+                    matchText.className = 'match-text match-invalid';
+                    return false;
+                }
+            }
+            
+            // Toggle password visibility
+            function setupPasswordToggle(isMobile = true) {
+                const prefix = isMobile ? '' : 'Desktop';
+                const passwordInput = document.getElementById(`password${prefix}`);
+                const confirmPasswordInput = document.getElementById(`confirmPassword${prefix}`);
+                const togglePasswordBtn = document.getElementById(`togglePassword${prefix}`);
+                const toggleConfirmPasswordBtn = document.getElementById(`toggleConfirmPassword${prefix}`);
+                
+                if (togglePasswordBtn) {
+                    togglePasswordBtn.addEventListener('click', function() {
+                        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                        passwordInput.setAttribute('type', type);
+                        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+                    });
+                }
+                
+                if (toggleConfirmPasswordBtn) {
+                    toggleConfirmPasswordBtn.addEventListener('click', function() {
+                        const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                        confirmPasswordInput.setAttribute('type', type);
+                        this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+                    });
+                }
+            }
+            
+            // Toggle password strength analysis visibility
+            function setupStrengthToggle(isMobile = true) {
+                const prefix = isMobile ? '' : 'Desktop';
+                const strengthHeader = document.getElementById(`strengthHeader${prefix}`);
+                const strengthContainer = document.getElementById(`passwordStrength${prefix}`);
+                
+                if (strengthHeader) {
+                    strengthHeader.addEventListener('click', function() {
+                        if (strengthContainer.classList.contains('expanded')) {
+                            strengthContainer.classList.remove('expanded');
+                            strengthHeader.classList.remove('expanded');
+                            strengthHeader.classList.add('collapsed');
+                        } else {
+                            strengthContainer.classList.add('expanded');
+                            strengthHeader.classList.remove('collapsed');
+                            strengthHeader.classList.add('expanded');
+                        }
+                    });
+                }
+            }
+            
+            // Auto-collapse strength analysis when password input loses focus
+            function setupAutoCollapse(isMobile = true) {
+                const prefix = isMobile ? '' : 'Desktop';
+                const passwordInput = document.getElementById(`password${prefix}`);
+                const strengthContainer = document.getElementById(`passwordStrength${prefix}`);
+                const strengthHeader = document.getElementById(`strengthHeader${prefix}`);
+                
+                if (passwordInput) {
+                    passwordInput.addEventListener('focus', function() {
+                        // Expand the strength analysis when focusing on password
+                        if (this.value.length > 0) {
+                            strengthContainer.classList.add('expanded');
+                            strengthHeader.classList.remove('collapsed');
+                            strengthHeader.classList.add('expanded');
+                        }
+                    });
+                    
+                    passwordInput.addEventListener('blur', function() {
+                        // Collapse when losing focus (no delay)
+                        strengthContainer.classList.remove('expanded');
+                        strengthHeader.classList.remove('expanded');
+                        strengthHeader.classList.add('collapsed');
+                    });
+                }
+            }
+            
+            // Mobile Animation Functions
+            function setupMobileAnimation() {
+                const card1 = document.querySelector('#mobileView .card-1');
+                const card2 = document.querySelector('#mobileView .card-2');
+                const card3 = document.querySelector('#mobileView .card-3');
+                const createFormContainer = document.querySelector('#mobileView .create-form-container');
+                const createAccountButton = document.querySelector('#mobileView #createAccountButton');
+                const closeFormBtn = document.querySelector('#mobileView #closeFormBtn');
+                const googleSignUpBtn = document.querySelector('#mobileView #googleSignUp');
+                const loginLink = document.querySelector('#mobileView #loginLink');
+                const frontCard = document.querySelector('#mobileView #frontCard');
+                const termsLink = document.querySelector('#mobileView #termsLink');
+                const privacyLink = document.querySelector('#mobileView #privacyLink');
+                const termsCheckbox = document.querySelector('#mobileView #termsCheckbox');
+                const passwordInput = document.querySelector('#mobileView #password');
+                const confirmPasswordInput = document.querySelector('#mobileView #confirmPassword');
+                
+                let animationCompleted = false;
+                
+                // Initial animation sequence - SLOWER
+                function startAnimation() {
+                    // Reset all elements
+                    card1.classList.remove('active', 'card-expanded');
+                    card2.classList.remove('active');
+                    card3.classList.remove('active');
+                    createFormContainer.classList.remove('visible');
+                    
+                    // Card 3 enters first (back card) - SLOWER
+                    setTimeout(() => {
+                        card3.classList.add('active');
+                    }, 500); // Increased from 300
+                    
+                    // Card 2 enters second - SLOWER
+                    setTimeout(() => {
+                        card2.classList.add('active');
+                    }, 1000); // Increased from 600
+                    
+                    // Card 1 enters last (front card) - SLOWER
+                    setTimeout(() => {
+                        card1.classList.add('active');
+                        animationCompleted = true;
+                        
+                        // AUTOMATICALLY OPEN THE FORM AFTER ANIMATION
+                        setTimeout(() => {
+                            if (!card1.classList.contains('card-expanded')) {
+                                card1.classList.add('card-expanded');
+                                setTimeout(() => {
+                                    createFormContainer.classList.add('visible');
+                                }, 400);
+                            }
+                        }, 1000); // Delay before auto-opening form
+                    }, 1500); // Increased from 900
+                }
+                
+                // Start animation on page load
+                setTimeout(startAnimation, 500);
+                
+                // Close form button
+                closeFormBtn.addEventListener('click', function() {
+                    createFormContainer.classList.remove('visible');
+                    setTimeout(() => {
+                        card1.classList.remove('card-expanded');
+                    }, 300);
+                    
+                    // Reset form fields
+                    document.querySelector('#mobileView #fullName').value = '';
+                    document.querySelector('#mobileView #email').value = '';
+                    document.querySelector('#mobileView #password').value = '';
+                    document.querySelector('#mobileView #confirmPassword').value = '';
+                    document.querySelector('#mobileView #termsCheckbox').checked = false;
+                    
+                    // Reset password strength UI
+                    updatePasswordStrengthUI('', true);
+                    updatePasswordMatchUI('', '', true);
+                    
+                    // Collapse strength analysis
+                    const strengthContainer = document.getElementById('passwordStrength');
+                    const strengthHeader = document.getElementById('strengthHeader');
+                    strengthContainer.classList.remove('expanded');
+                    strengthHeader.classList.remove('expanded');
+                    strengthHeader.classList.add('collapsed');
+                });
+                
+                // Card click functionality - only works after animation completes
+                frontCard.addEventListener('click', function() {
+                    if (animationCompleted && !card1.classList.contains('card-expanded')) {
+                        card1.classList.add('card-expanded');
+                        setTimeout(() => {
+                            createFormContainer.classList.add('visible');
+                        }, 400);
+                    }
+                });
+                
+                // Password input events
+                passwordInput.addEventListener('input', function() {
+                    updatePasswordStrengthUI(this.value, true);
+                    updatePasswordMatchUI(this.value, confirmPasswordInput.value, true);
+                    
+                    // Auto-expand strength analysis when typing
+                    const strengthContainer = document.getElementById('passwordStrength');
+                    const strengthHeader = document.getElementById('strengthHeader');
+                    if (this.value.length > 0 && !strengthContainer.classList.contains('expanded')) {
+                        strengthContainer.classList.add('expanded');
+                        strengthHeader.classList.remove('collapsed');
+                        strengthHeader.classList.add('expanded');
+                    }
+                });
+                
+                confirmPasswordInput.addEventListener('input', function() {
+                    updatePasswordMatchUI(passwordInput.value, this.value, true);
+                });
+                
+                // Setup password toggle visibility
+                setupPasswordToggle(true);
+                
+                // Setup strength analysis toggle
+                setupStrengthToggle(true);
+                
+                // Setup auto-collapse
+                setupAutoCollapse(true);
+                
+                // Google Sign-Up Button
+                googleSignUpBtn.addEventListener('click', function() {
+                    // Simulate Google OAuth process
+                    googleSignUpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+                    googleSignUpBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        // Simulate successful Google auth
+                        showNotification('Google authentication successful! Account created.', 'success');
+                        
+                        // Reset button state
+                        googleSignUpBtn.innerHTML = `
+                            <div class="google-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <span>Sign up with Google</span>
+                        `;
+                        googleSignUpBtn.disabled = false;
+                        
+                        // Simulate successful account creation
+                        setTimeout(() => {
+                            window.location.href = 'index.html'; // Redirect to login page
+                        }, 1500);
+                    }, 1500);
+                });
+                
+                // Terms & Privacy Links
+                termsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showNotification('Terms & Conditions would open in a modal', 'info');
+                });
+                
+                privacyLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showNotification('Privacy Policy would open in a modal', 'info');
+                });
+                
+                // Login Link
+                loginLink.addEventListener('click', function() {
+                    showNotification('Redirecting to login page...', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Redirect to login page
+                    }, 1000);
+                });
+                
+                // Create Account button interaction
+                createAccountButton.addEventListener('click', function() {
+                    const fullName = document.querySelector('#mobileView #fullName').value;
+                    const email = document.querySelector('#mobileView #email').value;
+                    const password = document.querySelector('#mobileView #password').value;
+                    const confirmPassword = document.querySelector('#mobileView #confirmPassword').value;
+                    
+                    // Validation
+                    let isValid = true;
+                    
+                    if (!fullName) {
+                        highlightError('#mobileView #fullName');
+                        isValid = false;
+                    }
+                    
+                    if (!email) {
+                        highlightError('#mobileView #email');
+                        isValid = false;
+                    } else if (!validateEmail(email)) {
+                        showNotification('Please enter a valid email address', 'error');
+                        highlightError('#mobileView #email');
+                        isValid = false;
+                    }
+                    
+                    const passwordAnalysis = analyzePassword(password);
+                    if (!password) {
+                        highlightError('#mobileView #password');
+                        isValid = false;
+                    } else if (password.length < 8) {
+                        showNotification('Password must be at least 8 characters', 'error');
+                        highlightError('#mobileView #password');
+                        isValid = false;
+                    } else if (passwordAnalysis.strength < 60) {
+                        showNotification('Password is too weak. Please use a stronger password.', 'error');
+                        highlightError('#mobileView #password');
+                        isValid = false;
+                    }
+                    
+                    if (!confirmPassword) {
+                        highlightError('#mobileView #confirmPassword');
+                        isValid = false;
+                    } else if (password !== confirmPassword) {
+                        showNotification('Passwords do not match', 'error');
+                        highlightError('#mobileView #confirmPassword');
+                        isValid = false;
+                    }
+                    
+                    if (!termsCheckbox.checked) {
+                        showNotification('Please accept the Terms & Conditions', 'error');
+                        isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        // Add shake effect to create button
+                        createAccountButton.style.transform = 'translateX(10px)';
+                        setTimeout(() => {
+                            createAccountButton.style.transform = 'translateX(-10px)';
+                            setTimeout(() => {
+                                createAccountButton.style.transform = 'translateX(0)';
+                            }, 100);
+                        }, 100);
+                        return;
+                    }
+                    
+                    // Simulate account creation process
+                    createAccountButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                    createAccountButton.disabled = true;
+                    createAccountButton.style.background = 'linear-gradient(145deg, #037AB3 0%, #025a8c 100%)';
+                    
+                    setTimeout(() => {
+                        createAccountButton.innerHTML = '<i class="fas fa-check"></i> Account Created';
+                        createAccountButton.style.background = 'linear-gradient(145deg, #2ed573 0%, #1dd1a1 100%)';
+                        
+                        // Simulate successful account creation
+                        setTimeout(() => {
+                            showNotification('Account created successfully! Welcome to Money Manager.', 'success');
+                            
+                            // Reset form
+                            document.querySelector('#mobileView #fullName').value = '';
+                            document.querySelector('#mobileView #email').value = '';
+                            document.querySelector('#mobileView #password').value = '';
+                            document.querySelector('#mobileView #confirmPassword').value = '';
+                            termsCheckbox.checked = false;
+                            
+                            // Reset password strength UI
+                            updatePasswordStrengthUI('', true);
+                            updatePasswordMatchUI('', '', true);
+                            
+                            // Collapse strength analysis
+                            const strengthContainer = document.getElementById('passwordStrength');
+                            const strengthHeader = document.getElementById('strengthHeader');
+                            strengthContainer.classList.remove('expanded');
+                            strengthHeader.classList.remove('expanded');
+                            strengthHeader.classList.add('collapsed');
+                            
+                            // Reset button
+                            createAccountButton.innerHTML = 'Create Account';
+                            createAccountButton.disabled = false;
+                            createAccountButton.style.background = 'linear-gradient(145deg, #0596D7 0%, #037AB3 100%)';
+                            
+                            // Redirect to login page after success
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1500);
+                        }, 1000);
+                    }, 1500);
+                });
+            }
+            
+            // Desktop Animation Functions
+            function setupDesktopAnimation() {
+                const card1 = document.querySelector('#desktopView .card-1');
+                const card2 = document.querySelector('#desktopView .card-2');
+                const card3 = document.querySelector('#desktopView .card-3');
+                const createFormContainer = document.querySelector('#desktopView .create-form-container');
+                const createAccountButton = document.querySelector('#desktopView #createAccountButtonDesktop');
+                const closeFormBtn = document.querySelector('#desktopView #closeFormBtnDesktop');
+                const googleSignUpBtn = document.querySelector('#desktopView #googleSignUpDesktop');
+                const loginLink = document.querySelector('#desktopView #loginLinkDesktop');
+                const frontCard = document.querySelector('#desktopView #frontCardDesktop');
+                const termsLink = document.querySelector('#desktopView #termsLinkDesktop');
+                const privacyLink = document.querySelector('#desktopView #privacyLinkDesktop');
+                const termsCheckbox = document.querySelector('#desktopView #termsCheckboxDesktop');
+                const passwordInput = document.querySelector('#desktopView #passwordDesktop');
+                const confirmPasswordInput = document.querySelector('#desktopView #confirmPasswordDesktop');
+                
+                let animationCompleted = false;
+                
+                // Initial animation sequence - SLOWER
+                function startDesktopAnimation() {
+                    // Reset all elements
+                    card1.classList.remove('active', 'card-expanded');
+                    card2.classList.remove('active');
+                    card3.classList.remove('active');
+                    createFormContainer.classList.remove('visible');
+                    
+                    // Card 3 enters first (back card) - SLOWER
+                    setTimeout(() => {
+                        card3.classList.add('active');
+                    }, 500); // Increased from 300
+                    
+                    // Card 2 enters second - SLOWER
+                    setTimeout(() => {
+                        card2.classList.add('active');
+                    }, 1000); // Increased from 600
+                    
+                    // Card 1 enters last (front card) - SLOWER
+                    setTimeout(() => {
+                        card1.classList.add('active');
+                        animationCompleted = true;
+                        
+                        // AUTOMATICALLY OPEN THE FORM AFTER ANIMATION
+                        setTimeout(() => {
+                            if (!card1.classList.contains('card-expanded')) {
+                                card1.classList.add('card-expanded');
+                                setTimeout(() => {
+                                    createFormContainer.classList.add('visible');
+                                }, 400);
+                            }
+                        }, 1000); // Delay before auto-opening form
+                    }, 1500); // Increased from 900
+                }
+                
+                // Start desktop animation initially
+                startDesktopAnimation();
+                
+                // Close form button
+                closeFormBtn.addEventListener('click', function() {
+                    createFormContainer.classList.remove('visible');
+                    setTimeout(() => {
+                        card1.classList.remove('card-expanded');
+                    }, 300);
+                    
+                    // Reset form fields
+                    document.querySelector('#desktopView #fullNameDesktop').value = '';
+                    document.querySelector('#desktopView #emailDesktop').value = '';
+                    document.querySelector('#desktopView #passwordDesktop').value = '';
+                    document.querySelector('#desktopView #confirmPasswordDesktop').value = '';
+                    document.querySelector('#desktopView #termsCheckboxDesktop').checked = false;
+                    
+                    // Reset password strength UI
+                    updatePasswordStrengthUI('', false);
+                    updatePasswordMatchUI('', '', false);
+                    
+                    // Collapse strength analysis
+                    const strengthContainer = document.getElementById('passwordStrengthDesktop');
+                    const strengthHeader = document.getElementById('strengthHeaderDesktop');
+                    strengthContainer.classList.remove('expanded');
+                    strengthHeader.classList.remove('expanded');
+                    strengthHeader.classList.add('collapsed');
+                });
+                
+                // Card click functionality - only works after animation completes
+                frontCard.addEventListener('click', function() {
+                    if (animationCompleted && !card1.classList.contains('card-expanded')) {
+                        card1.classList.add('card-expanded');
+                        setTimeout(() => {
+                            createFormContainer.classList.add('visible');
+                        }, 400);
+                    }
+                });
+                
+                // Password input events
+                passwordInput.addEventListener('input', function() {
+                    updatePasswordStrengthUI(this.value, false);
+                    updatePasswordMatchUI(this.value, confirmPasswordInput.value, false);
+                    
+                    // Auto-expand strength analysis when typing
+                    const strengthContainer = document.getElementById('passwordStrengthDesktop');
+                    const strengthHeader = document.getElementById('strengthHeaderDesktop');
+                    if (this.value.length > 0 && !strengthContainer.classList.contains('expanded')) {
+                        strengthContainer.classList.add('expanded');
+                        strengthHeader.classList.remove('collapsed');
+                        strengthHeader.classList.add('expanded');
+                    }
+                });
+                
+                confirmPasswordInput.addEventListener('input', function() {
+                    updatePasswordMatchUI(passwordInput.value, this.value, false);
+                });
+                
+                // Setup password toggle visibility
+                setupPasswordToggle(false);
+                
+                // Setup strength analysis toggle
+                setupStrengthToggle(false);
+                
+                // Setup auto-collapse
+                setupAutoCollapse(false);
+                
+                // Google Sign-Up Button
+                googleSignUpBtn.addEventListener('click', function() {
+                    // Simulate Google OAuth process
+                    googleSignUpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+                    googleSignUpBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        // Simulate successful Google auth
+                        showNotification('Google authentication successful! Account created.', 'success');
+                        
+                        // Reset button state
+                        googleSignUpBtn.innerHTML = `
+                            <div class="google-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <span>Sign up with Google</span>
+                        `;
+                        googleSignUpBtn.disabled = false;
+                        
+                        // Simulate successful account creation
+                        setTimeout(() => {
+                            window.location.href = 'index.html'; // Redirect to login page
+                        }, 1500);
+                    }, 1500);
+                });
+                
+                // Terms & Privacy Links
+                termsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showNotification('Terms & Conditions would open in a modal', 'info');
+                });
+                
+                privacyLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showNotification('Privacy Policy would open in a modal', 'info');
+                });
+                
+                // Login Link
+                loginLink.addEventListener('click', function() {
+                    showNotification('Redirecting to login page...', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Redirect to login page
+                    }, 1000);
+                });
+                
+                // Create Account button interaction
+                createAccountButton.addEventListener('click', function() {
+                    const fullName = document.querySelector('#desktopView #fullNameDesktop').value;
+                    const email = document.querySelector('#desktopView #emailDesktop').value;
+                    const password = document.querySelector('#desktopView #passwordDesktop').value;
+                    const confirmPassword = document.querySelector('#desktopView #confirmPasswordDesktop').value;
+                    
+                    // Validation
+                    let isValid = true;
+                    
+                    if (!fullName) {
+                        highlightError('#desktopView #fullNameDesktop');
+                        isValid = false;
+                    }
+                    
+                    if (!email) {
+                        highlightError('#desktopView #emailDesktop');
+                        isValid = false;
+                    } else if (!validateEmail(email)) {
+                        showNotification('Please enter a valid email address', 'error');
+                        highlightError('#desktopView #emailDesktop');
+                        isValid = false;
+                    }
+                    
+                    const passwordAnalysis = analyzePassword(password);
+                    if (!password) {
+                        highlightError('#desktopView #passwordDesktop');
+                        isValid = false;
+                    } else if (password.length < 8) {
+                        showNotification('Password must be at least 8 characters', 'error');
+                        highlightError('#desktopView #passwordDesktop');
+                        isValid = false;
+                    } else if (passwordAnalysis.strength < 60) {
+                        showNotification('Password is too weak. Please use a stronger password.', 'error');
+                        highlightError('#desktopView #passwordDesktop');
+                        isValid = false;
+                    }
+                    
+                    if (!confirmPassword) {
+                        highlightError('#desktopView #confirmPasswordDesktop');
+                        isValid = false;
+                    } else if (password !== confirmPassword) {
+                        showNotification('Passwords do not match', 'error');
+                        highlightError('#desktopView #confirmPasswordDesktop');
+                        isValid = false;
+                    }
+                    
+                    if (!termsCheckbox.checked) {
+                        showNotification('Please accept the Terms & Conditions', 'error');
+                        isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        // Add shake effect to create button
+                        createAccountButton.style.transform = 'translateX(10px)';
+                        setTimeout(() => {
+                            createAccountButton.style.transform = 'translateX(-10px)';
+                            setTimeout(() => {
+                                createAccountButton.style.transform = 'translateX(0)';
+                            }, 100);
+                        }, 100);
+                        return;
+                    }
+                    
+                    // Simulate account creation process
+                    createAccountButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                    createAccountButton.disabled = true;
+                    createAccountButton.style.background = 'linear-gradient(145deg, #037AB3 0%, #025a8c 100%)';
+                    
+                    setTimeout(() => {
+                        createAccountButton.innerHTML = '<i class="fas fa-check"></i> Account Created';
+                        createAccountButton.style.background = 'linear-gradient(145deg, #2ed573 0%, #1dd1a1 100%)';
+                        
+                        // Simulate successful account creation
+                        setTimeout(() => {
+                            showNotification('Account created successfully! Welcome to Money Manager.', 'success');
+                            
+                            // Reset form
+                            document.querySelector('#desktopView #fullNameDesktop').value = '';
+                            document.querySelector('#desktopView #emailDesktop').value = '';
+                            document.querySelector('#desktopView #passwordDesktop').value = '';
+                            document.querySelector('#desktopView #confirmPasswordDesktop').value = '';
+                            termsCheckbox.checked = false;
+                            
+                            // Reset password strength UI
+                            updatePasswordStrengthUI('', false);
+                            updatePasswordMatchUI('', '', false);
+                            
+                            // Collapse strength analysis
+                            const strengthContainer = document.getElementById('passwordStrengthDesktop');
+                            const strengthHeader = document.getElementById('strengthHeaderDesktop');
+                            strengthContainer.classList.remove('expanded');
+                            strengthHeader.classList.remove('expanded');
+                            strengthHeader.classList.add('collapsed');
+                            
+                            // Reset button
+                            createAccountButton.innerHTML = 'Create Account';
+                            createAccountButton.disabled = false;
+                            createAccountButton.style.background = 'linear-gradient(145deg, #0596D7 0%, #037AB3 100%)';
+                            
+                            // Redirect to login page after success
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1500);
+                        }, 1000);
+                    }, 1500);
+                });
+            }
+            
+            // Utility functions
+            function highlightError(selector) {
+                const element = document.querySelector(selector);
+                element.style.borderColor = '#ff4757';
+                element.style.boxShadow = '0 0 0 3px rgba(255, 71, 87, 0.15)';
+                setTimeout(() => {
+                    element.style.borderColor = '';
+                    element.style.boxShadow = '';
+                }, 1000);
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? 'linear-gradient(145deg, #2ed573 0%, #1dd1a1 100%)' : 
+                                type === 'error' ? 'linear-gradient(145deg, #ff4757 0%, #ff3838 100%)' : 
+                                'linear-gradient(145deg, #0596D7 0%, #037AB3 100%)'};
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+                    z-index: 10000;
+                    font-weight: 500;
+                    max-width: 300px;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                
+                // Add animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                        document.head.removeChild(style);
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Initialize all setups
+            setupMobileAnimation();
+            setupDesktopAnimation();
+            
+            // Add input focus effects
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.querySelector('i').style.color = '#0596D7';
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.querySelector('i').style.color = '#aaa';
+                    }
+                });
+            });
+            
+            // Initialize password match indicators as hidden
+            document.getElementById('passwordMatch').style.display = 'none';
+            document.getElementById('passwordMatchDesktop').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
+

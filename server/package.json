@@ -1,0 +1,38 @@
+{
+  "name": "money-manager-fintech",
+  "version": "1.0.0",
+  "description": "Full-stack real-time personal finance management system",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "render-start": "NODE_ENV=production node server.js"
+  },
+  "keywords": [
+    "finance",
+    "money-manager",
+    "fintech",
+    "expense-tracker",
+    "pwa",
+    "realtime"
+  ],
+  "author": "Money Manager",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.17.3",
+    "socket.io": "^4.7.5",
+    "uuid": "^9.0.1",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

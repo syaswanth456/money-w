@@ -1,0 +1,1395 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Money Manager | Premium Digital Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: #333;
+            perspective: 1000px;
+        }
+
+        /* Mobile Layout */
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            height: 700px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            background: white;
+            margin: 20px;
+        }
+
+        /* Desktop Layout */
+        .desktop-container {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            height: 700px;
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+        }
+
+        .bg-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 15% 50%, rgba(110, 203, 245, 0.05) 0%, transparent 20%),
+                              radial-gradient(circle at 85% 30%, rgba(110, 203, 245, 0.03) 0%, transparent 20%);
+            z-index: 0;
+        }
+
+        /* Cards Container */
+        .cards-container {
+            position: relative;
+            width: 360px;
+            height: 500px;
+            z-index: 10;
+        }
+
+        .credit-card {
+            position: absolute;
+            width: 360px;
+            height: 225px;
+            background: linear-gradient(145deg, #6ECBF5 0%, #0596D7 40%, #037AB3 100%);
+            border-radius: 24px;
+            box-shadow: 
+                0 12px 24px rgba(0, 120, 215, 0.2),
+                0 6px 12px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(120%) rotateX(10deg);
+            transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+        }
+
+        .card-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.05;
+            border-radius: 24px;
+        }
+
+        .card-gloss {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 70%);
+            transform: rotate(25deg);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .card-chip {
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .chip-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(0, 0, 0, 0.1) 5px, rgba(0, 0, 0, 0.1) 7px);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 100px;
+            left: 30px;
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-number span {
+            margin: 0 10px;
+        }
+
+        .card-holder {
+            position: absolute;
+            bottom: 40px;
+            left: 30px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .card-logo {
+            position: absolute;
+            bottom: 40px;
+            right: 30px;
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: 1px;
+        }
+
+        /* Login Form */
+        .login-form-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 360px;
+            height: 480px;
+            z-index: 100;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .login-form-container.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        .login-form {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            /* Removed scroll bar */
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s;
+        }
+
+        .login-form-container.visible .login-form {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        /* Google Button with Official Google Logo */
+        .google-btn {
+            width: 100%;
+            padding: 16px;
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #3c4043;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            border-color: #d2e3fc;
+        }
+
+        .google-btn:active {
+            background: #f1f3f4;
+        }
+
+        .google-logo {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e1e5e9;
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            transition: color 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 45px;
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #6ECBF5;
+            box-shadow: 0 0 0 3px rgba(110, 203, 245, 0.15);
+            background: #fff;
+        }
+
+        .input-group input:focus + i {
+            color: #0596D7;
+        }
+
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+
+        /* Form Links (Above Login Button) */
+        .form-links-above {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 0 5px;
+        }
+
+        .form-link {
+            color: #0596D7;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .form-link:hover {
+            color: #037AB3;
+            text-decoration: underline;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(145deg, #0596D7 0%, #037AB3 100%);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(3, 122, 179, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(3, 122, 179, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .form-footer {
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes subtle-glow {
+            0%, 100% { 
+                box-shadow: 0 12px 24px rgba(0, 120, 215, 0.2), 
+                            0 6px 12px rgba(0, 0, 0, 0.08), 
+                            0 0 0 1px rgba(255, 255, 255, 0.3); 
+            }
+            50% { 
+                box-shadow: 0 16px 32px rgba(0, 120, 215, 0.25), 
+                            0 8px 16px rgba(0, 0, 0, 0.1), 
+                            0 0 0 1px rgba(255, 255, 255, 0.4); 
+            }
+        }
+
+        .card-1 { z-index: 30; transform-origin: center; }
+        .card-2 { z-index: 20; transform-origin: center; }
+        .card-3 { z-index: 10; transform-origin: center; }
+
+        /* Active states for animation */
+        .card-1.active {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+            animation: subtle-glow 2s infinite alternate ease-in-out;
+        }
+
+        .card-2.active {
+            opacity: 0.85;
+            transform: translateY(60px) scale(0.95) rotateX(0);
+        }
+
+        .card-3.active {
+            opacity: 0.7;
+            transform: translateY(120px) scale(0.9) rotateX(0);
+        }
+
+        .card-expanded {
+            height: 480px !important;
+            animation: pulse 0.4s ease-in-out;
+            z-index: 50;
+        }
+
+        /* App header */
+        .app-header {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+            width: 100%;
+            z-index: 5;
+        }
+
+        .app-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #037AB3;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .app-tagline {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Desktop Layout */
+        .desktop-content {
+            width: 100%;
+            height: 100%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .desktop-app-header {
+            margin-bottom: 40px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .desktop-app-logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #037AB3;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .desktop-app-tagline {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Form close button */
+        .close-form {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            border: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 101;
+        }
+
+        .close-form:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        /* Modal for Forgot Password */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s 0.1s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .modal p {
+            margin-bottom: 25px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.cancel {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e1e5e9;
+        }
+
+        .modal-btn.submit {
+            background: linear-gradient(145deg, #0596D7 0%, #037AB3 100%);
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tap Instruction */
+        .tap-instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 60;
+            white-space: nowrap;
+        }
+
+        .credit-card.active:hover .tap-instruction {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (min-width: 1024px) {
+            .mobile-container {
+                display: none;
+            }
+            
+            .desktop-container {
+                display: block;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .mobile-container {
+                display: flex;
+            }
+            
+            .desktop-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Layout -->
+    <div class="mobile-container" id="mobileView">
+        <div class="bg-texture"></div>
+        
+        <div class="app-header">
+            <div class="app-logo">MONEY MANAGER</div>
+            <div class="app-tagline">Premium Digital Platform</div>
+        </div>
+        
+        <div class="cards-container">
+            <!-- Third Card (Back) -->
+            <div class="credit-card card-3">
+                <div class="card-texture"></div>
+                <div class="card-gloss"></div>
+                <div class="card-chip">
+                    <div class="chip-lines"></div>
+                </div>
+                <div class="card-number">
+                    <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                </div>
+                <div class="card-holder">MONEY MANAGER</div>
+                <div class="card-logo">MM</div>
+            </div>
+            
+            <!-- Second Card (Middle) -->
+            <div class="credit-card card-2">
+                <div class="card-texture"></div>
+                <div class="card-gloss"></div>
+                <div class="card-chip">
+                    <div class="chip-lines"></div>
+                </div>
+                <div class="card-number">
+                    <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                </div>
+                <div class="card-holder">MONEY MANAGER</div>
+                <div class="card-logo">MM</div>
+            </div>
+            
+            <!-- First Card (Front) -->
+            <div class="credit-card card-1" id="frontCard">
+                <div class="card-texture"></div>
+                <div class="card-gloss"></div>
+                <div class="card-chip">
+                    <div class="chip-lines"></div>
+                </div>
+                <div class="card-number">
+                    <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                </div>
+                <div class="card-holder">MONEY MANAGER</div>
+                <div class="card-logo">MM</div>
+                <div class="tap-instruction">Tap to login</div>
+            </div>
+            
+            <!-- Login Form Container -->
+            <div class="login-form-container" id="loginFormContainer">
+                <button class="close-form" id="closeFormBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="login-form">
+                    <h2 class="form-title">Welcome Back</h2>
+                    
+                    <!-- Google Sign-In Button with Official Logo -->
+                    <button class="google-btn" id="googleSignIn">
+                        <div class="google-logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                        </div>
+                        <span>Sign in with Google</span>
+                    </button>
+                    
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span>or continue with email</span>
+                    </div>
+                    
+                    <!-- Email Input -->
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email address" id="email">
+                    </div>
+                    
+                    <!-- Password Input -->
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" id="password">
+                    </div>
+                    
+                    <!-- Form Links (Above Login Button) -->
+                    <div class="form-links-above">
+                        <button class="form-link" id="forgotPasswordBtn">Forgot Password?</button>
+                        <button class="form-link" id="createAccountBtn">Create Account</button>
+                    </div>
+                    
+                    <!-- Login Button -->
+                    <button class="login-btn" id="loginButton">Login to Account</button>
+                    
+                    <!-- Footer -->
+                    <div class="form-footer">
+                        <p>Secured by 256-bit encryption • © 2023 Money Manager</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Layout -->
+    <div class="desktop-container" id="desktopView">
+        <div class="bg-texture"></div>
+        
+        <div class="desktop-content">
+            <div class="desktop-app-header">
+                <div class="desktop-app-logo">MONEY MANAGER</div>
+                <div class="desktop-app-tagline">Premium Digital Platform</div>
+            </div>
+            
+            <div class="cards-container">
+                <!-- Third Card (Back) -->
+                <div class="credit-card card-3">
+                    <div class="card-texture"></div>
+                    <div class="card-gloss"></div>
+                    <div class="card-chip">
+                        <div class="chip-lines"></div>
+                    </div>
+                    <div class="card-number">
+                        <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                    </div>
+                    <div class="card-holder">MONEY MANAGER</div>
+                    <div class="card-logo">MM</div>
+                </div>
+                
+                <!-- Second Card (Middle) -->
+                <div class="credit-card card-2">
+                    <div class="card-texture"></div>
+                    <div class="card-gloss"></div>
+                    <div class="card-chip">
+                        <div class="chip-lines"></div>
+                    </div>
+                    <div class="card-number">
+                        <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                    </div>
+                    <div class="card-holder">MONEY MANAGER</div>
+                    <div class="card-logo">MM</div>
+                </div>
+                
+                <!-- First Card (Front) -->
+                <div class="credit-card card-1" id="frontCardDesktop">
+                    <div class="card-texture"></div>
+                    <div class="card-gloss"></div>
+                    <div class="card-chip">
+                        <div class="chip-lines"></div>
+                    </div>
+                    <div class="card-number">
+                        <span>6***</span> <span>*277</span> <span>0601</span> <span>2025</span>
+                    </div>
+                    <div class="card-holder">MONEY MANAGER</div>
+                    <div class="card-logo">MM</div>
+                    <div class="tap-instruction">Click to login</div>
+                </div>
+                
+                <!-- Login Form Container -->
+                <div class="login-form-container" id="loginFormContainerDesktop">
+                    <button class="close-form" id="closeFormBtnDesktop">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="login-form">
+                        <h2 class="form-title">Welcome Back</h2>
+                        
+                        <!-- Google Sign-In Button with Official Logo -->
+                        <button class="google-btn" id="googleSignInDesktop">
+                            <div class="google-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <span>Sign in with Google</span>
+                        </button>
+                        
+                        <!-- Divider -->
+                        <div class="divider">
+                            <span>or continue with email</span>
+                        </div>
+                        
+                        <!-- Email Input -->
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email address" id="emailDesktop">
+                        </div>
+                        
+                        <!-- Password Input -->
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" id="passwordDesktop">
+                        </div>
+                        
+                        <!-- Form Links (Above Login Button) -->
+                        <div class="form-links-above">
+                            <button class="form-link" id="forgotPasswordBtnDesktop">Forgot Password?</button>
+                            <button class="form-link" id="createAccountBtnDesktop">Create Account</button>
+                        </div>
+                        
+                        <!-- Login Button -->
+                        <button class="login-btn" id="loginButtonDesktop">Login to Account</button>
+                        
+                        <!-- Footer -->
+                        <div class="form-footer">
+                            <p>Secured by 256-bit encryption • © 2023 Money Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal">
+            <h3>Reset Your Password</h3>
+            <p>Enter your email address and we'll send you a link to reset your password.</p>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Email address" id="resetEmail">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="cancelReset">Cancel</button>
+                <button class="modal-btn submit" id="sendResetLink">Send Reset Link</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Account Modal -->
+    <div class="modal-overlay" id="createAccountModal">
+        <div class="modal">
+            <h3>Create New Account</h3>
+            <p>Join Money Manager for premium digital banking experience.</p>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Full Name" id="fullName">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Email address" id="newEmail">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Create Password" id="newPassword">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="cancelCreate">Cancel</button>
+                <button class="modal-btn submit" id="createAccount">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Animation Functions
+            function setupMobileAnimation() {
+                const card1 = document.querySelector('#mobileView .card-1');
+                const card2 = document.querySelector('#mobileView .card-2');
+                const card3 = document.querySelector('#mobileView .card-3');
+                const loginFormContainer = document.querySelector('#mobileView .login-form-container');
+                const loginButton = document.querySelector('#mobileView #loginButton');
+                const closeFormBtn = document.querySelector('#mobileView #closeFormBtn');
+                const googleSignInBtn = document.querySelector('#mobileView #googleSignIn');
+                const forgotPasswordBtn = document.querySelector('#mobileView #forgotPasswordBtn');
+                const createAccountBtn = document.querySelector('#mobileView #createAccountBtn');
+                const frontCard = document.querySelector('#mobileView #frontCard');
+                
+                let animationCompleted = false;
+                
+                // Initial animation sequence
+                function startAnimation() {
+                    // Reset all elements
+                    card1.classList.remove('active', 'card-expanded');
+                    card2.classList.remove('active');
+                    card3.classList.remove('active');
+                    loginFormContainer.classList.remove('visible');
+                    
+                    // Hide modals
+                    document.getElementById('forgotPasswordModal').classList.remove('active');
+                    document.getElementById('createAccountModal').classList.remove('active');
+                    
+                    // Card 3 enters first (back card)
+                    setTimeout(() => {
+                        card3.classList.add('active');
+                    }, 300);
+                    
+                    // Card 2 enters second
+                    setTimeout(() => {
+                        card2.classList.add('active');
+                    }, 600);
+                    
+                    // Card 1 enters last (front card)
+                    setTimeout(() => {
+                        card1.classList.add('active');
+                        animationCompleted = true;
+                    }, 900);
+                }
+                
+                // Start animation on page load
+                setTimeout(startAnimation, 500);
+                
+                // Close form button
+                closeFormBtn.addEventListener('click', function() {
+                    loginFormContainer.classList.remove('visible');
+                    setTimeout(() => {
+                        card1.classList.remove('card-expanded');
+                    }, 300);
+                });
+                
+                // Card click functionality - only works after animation completes
+                frontCard.addEventListener('click', function() {
+                    if (animationCompleted && !card1.classList.contains('card-expanded')) {
+                        card1.classList.add('card-expanded');
+                        setTimeout(() => {
+                            loginFormContainer.classList.add('visible');
+                        }, 400);
+                    }
+                });
+                
+                // Google Sign-In Button
+                googleSignInBtn.addEventListener('click', function() {
+                    // Simulate Google OAuth process
+                    googleSignInBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+                    googleSignInBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        // Simulate successful Google auth
+                        showNotification('Google authentication successful!', 'success');
+                        
+                        // Reset button state
+                        googleSignInBtn.innerHTML = `
+                            <div class="google-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <span>Sign in with Google</span>
+                        `;
+                        googleSignInBtn.disabled = false;
+                    }, 1500);
+                });
+                
+                // Forgot Password Button
+                forgotPasswordBtn.addEventListener('click', function() {
+                    document.getElementById('forgotPasswordModal').classList.add('active');
+                });
+                
+                // Create Account Button
+                createAccountBtn.addEventListener('click', function() {
+                    document.getElementById('createAccountModal').classList.add('active');
+                });
+                
+                // Login button interaction
+                loginButton.addEventListener('click', function() {
+                    const email = document.querySelector('#mobileView #email').value;
+                    const password = document.querySelector('#mobileView #password').value;
+                    
+                    if (!email || !password) {
+                        // Add shake animation to empty fields
+                        if (!email) {
+                            const emailInput = document.querySelector('#mobileView #email');
+                            emailInput.style.borderColor = '#ff4757';
+                            emailInput.style.boxShadow = '0 0 0 3px rgba(255, 71, 87, 0.15)';
+                            setTimeout(() => {
+                                emailInput.style.borderColor = '';
+                                emailInput.style.boxShadow = '';
+                            }, 1000);
+                        }
+                        if (!password) {
+                            const passwordInput = document.querySelector('#mobileView #password');
+                            passwordInput.style.borderColor = '#ff4757';
+                            passwordInput.style.boxShadow = '0 0 0 3px rgba(255, 71, 87, 0.15)';
+                            setTimeout(() => {
+                                passwordInput.style.borderColor = '';
+                                passwordInput.style.boxShadow = '';
+                            }, 1000);
+                        }
+                        
+                        // Add shake effect to login button
+                        loginButton.style.transform = 'translateX(10px)';
+                        setTimeout(() => {
+                            loginButton.style.transform = 'translateX(-10px)';
+                            setTimeout(() => {
+                                loginButton.style.transform = 'translateX(0)';
+                            }, 100);
+                        }, 100);
+                        
+                        return;
+                    }
+                    
+                    // Simulate login process
+                    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+                    loginButton.disabled = true;
+                    loginButton.style.background = 'linear-gradient(145deg, #037AB3 0%, #025a8c 100%)';
+                    
+                    setTimeout(() => {
+                        loginButton.innerHTML = '<i class="fas fa-check"></i> Login Successful';
+                        loginButton.style.background = 'linear-gradient(145deg, #2ed573 0%, #1dd1a1 100%)';
+                        
+                        // Simulate navigation
+                        setTimeout(() => {
+                            showNotification('Login successful! Welcome to your Money Manager dashboard.', 'success');
+                            // Reset form
+                            document.querySelector('#mobileView #email').value = '';
+                            document.querySelector('#mobileView #password').value = '';
+                            loginButton.innerHTML = 'Login to Account';
+                            loginButton.disabled = false;
+                            loginButton.style.background = 'linear-gradient(145deg, #0596D7 0%, #037AB3 100%)';
+                        }, 1000);
+                    }, 1500);
+                });
+            }
+            
+            // Desktop Animation Functions
+            function setupDesktopAnimation() {
+                const card1 = document.querySelector('#desktopView .card-1');
+                const card2 = document.querySelector('#desktopView .card-2');
+                const card3 = document.querySelector('#desktopView .card-3');
+                const loginFormContainer = document.querySelector('#desktopView .login-form-container');
+                const loginButton = document.querySelector('#desktopView #loginButtonDesktop');
+                const closeFormBtn = document.querySelector('#desktopView #closeFormBtnDesktop');
+                const googleSignInBtn = document.querySelector('#desktopView #googleSignInDesktop');
+                const forgotPasswordBtn = document.querySelector('#desktopView #forgotPasswordBtnDesktop');
+                const createAccountBtn = document.querySelector('#desktopView #createAccountBtnDesktop');
+                const frontCard = document.querySelector('#desktopView #frontCardDesktop');
+                
+                let animationCompleted = false;
+                
+                // Initial animation sequence
+                function startDesktopAnimation() {
+                    // Reset all elements
+                    card1.classList.remove('active', 'card-expanded');
+                    card2.classList.remove('active');
+                    card3.classList.remove('active');
+                    loginFormContainer.classList.remove('visible');
+                    
+                    // Card 3 enters first (back card)
+                    setTimeout(() => {
+                        card3.classList.add('active');
+                    }, 300);
+                    
+                    // Card 2 enters second
+                    setTimeout(() => {
+                        card2.classList.add('active');
+                    }, 600);
+                    
+                    // Card 1 enters last (front card)
+                    setTimeout(() => {
+                        card1.classList.add('active');
+                        animationCompleted = true;
+                    }, 900);
+                }
+                
+                // Start desktop animation initially
+                startDesktopAnimation();
+                
+                // Close form button
+                closeFormBtn.addEventListener('click', function() {
+                    loginFormContainer.classList.remove('visible');
+                    setTimeout(() => {
+                        card1.classList.remove('card-expanded');
+                    }, 300);
+                });
+                
+                // Card click functionality - only works after animation completes
+                frontCard.addEventListener('click', function() {
+                    if (animationCompleted && !card1.classList.contains('card-expanded')) {
+                        card1.classList.add('card-expanded');
+                        setTimeout(() => {
+                            loginFormContainer.classList.add('visible');
+                        }, 400);
+                    }
+                });
+                
+                // Google Sign-In Button
+                googleSignInBtn.addEventListener('click', function() {
+                    // Simulate Google OAuth process
+                    googleSignInBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting to Google...';
+                    googleSignInBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        // Simulate successful Google auth
+                        showNotification('Google authentication successful!', 'success');
+                        
+                        // Reset button state
+                        googleSignInBtn.innerHTML = `
+                            <div class="google-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                            </div>
+                            <span>Sign in with Google</span>
+                        `;
+                        googleSignInBtn.disabled = false;
+                    }, 1500);
+                });
+                
+                // Forgot Password Button
+                forgotPasswordBtn.addEventListener('click', function() {
+                    document.getElementById('forgotPasswordModal').classList.add('active');
+                });
+                
+                // Create Account Button
+                createAccountBtn.addEventListener('click', function() {
+                    document.getElementById('createAccountModal').classList.add('active');
+                });
+                
+                // Login button interaction
+                loginButton.addEventListener('click', function() {
+                    const email = document.querySelector('#desktopView #emailDesktop').value;
+                    const password = document.querySelector('#desktopView #passwordDesktop').value;
+                    
+                    if (!email || !password) {
+                        // Add shake animation to empty fields
+                        if (!email) {
+                            const emailInput = document.querySelector('#desktopView #emailDesktop');
+                            emailInput.style.borderColor = '#ff4757';
+                            emailInput.style.boxShadow = '0 0 0 3px rgba(255, 71, 87, 0.15)';
+                            setTimeout(() => {
+                                emailInput.style.borderColor = '';
+                                emailInput.style.boxShadow = '';
+                            }, 1000);
+                        }
+                        if (!password) {
+                            const passwordInput = document.querySelector('#desktopView #passwordDesktop');
+                            passwordInput.style.borderColor = '#ff4757';
+                            passwordInput.style.boxShadow = '0 0 0 3px rgba(255, 71, 87, 0.15)';
+                            setTimeout(() => {
+                                passwordInput.style.borderColor = '';
+                                passwordInput.style.boxShadow = '';
+                            }, 1000);
+                        }
+                        
+                        // Add shake effect to login button
+                        loginButton.style.transform = 'translateX(10px)';
+                        setTimeout(() => {
+                            loginButton.style.transform = 'translateX(-10px)';
+                            setTimeout(() => {
+                                loginButton.style.transform = 'translateX(0)';
+                            }, 100);
+                        }, 100);
+                        
+                        return;
+                    }
+                    
+                    // Simulate login process
+                    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+                    loginButton.disabled = true;
+                    loginButton.style.background = 'linear-gradient(145deg, #037AB3 0%, #025a8c 100%)';
+                    
+                    setTimeout(() => {
+                        loginButton.innerHTML = '<i class="fas fa-check"></i> Login Successful';
+                        loginButton.style.background = 'linear-gradient(145deg, #2ed573 0%, #1dd1a1 100%)';
+                        
+                        // Simulate navigation
+                        setTimeout(() => {
+                            showNotification('Login successful! Welcome to your Money Manager dashboard.', 'success');
+                            // Reset form
+                            document.querySelector('#desktopView #emailDesktop').value = '';
+                            document.querySelector('#desktopView #passwordDesktop').value = '';
+                            loginButton.innerHTML = 'Login to Account';
+                            loginButton.disabled = false;
+                            loginButton.style.background = 'linear-gradient(145deg, #0596D7 0%, #037AB3 100%)';
+                        }, 1000);
+                    }, 1500);
+                });
+            }
+            
+            // Global Modal Functions
+            function setupGlobalModals() {
+                const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+                const createAccountModal = document.getElementById('createAccountModal');
+                const cancelResetBtn = document.getElementById('cancelReset');
+                const cancelCreateBtn = document.getElementById('cancelCreate');
+                const sendResetLinkBtn = document.getElementById('sendResetLink');
+                const createAccountSubmitBtn = document.getElementById('createAccount');
+                
+                // Modal Close Buttons
+                cancelResetBtn.addEventListener('click', function() {
+                    forgotPasswordModal.classList.remove('active');
+                });
+                
+                cancelCreateBtn.addEventListener('click', function() {
+                    createAccountModal.classList.remove('active');
+                });
+                
+                // Send Reset Link Button
+                sendResetLinkBtn.addEventListener('click', function() {
+                    const resetEmail = document.getElementById('resetEmail').value;
+                    
+                    if (!resetEmail) {
+                        // Show error
+                        const resetEmailInput = document.getElementById('resetEmail');
+                        resetEmailInput.style.borderColor = '#ff4757';
+                        resetEmailInput.style.boxShadow = '0 0 0 3px rgba(255, 71, 87, 0.15)';
+                        setTimeout(() => {
+                            resetEmailInput.style.borderColor = '';
+                            resetEmailInput.style.boxShadow = '';
+                        }, 1000);
+                        return;
+                    }
+                    
+                    // Simulate sending reset link
+                    sendResetLinkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    sendResetLinkBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        // Show success
+                        forgotPasswordModal.classList.remove('active');
+                        sendResetLinkBtn.innerHTML = 'Send Reset Link';
+                        sendResetLinkBtn.disabled = false;
+                        document.getElementById('resetEmail').value = '';
+                        
+                        showNotification('Password reset link sent to your email', 'success');
+                    }, 1500);
+                });
+                
+                // Create Account Submit Button
+                createAccountSubmitBtn.addEventListener('click', function() {
+                    const fullName = document.getElementById('fullName').value;
+                    const newEmail = document.getElementById('newEmail').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    
+                    // Simple validation
+                    if (!fullName || !newEmail || !newPassword) {
+                        // Highlight empty fields
+                        if (!fullName) {
+                            document.getElementById('fullName').style.borderColor = '#ff4757';
+                            setTimeout(() => {
+                                document.getElementById('fullName').style.borderColor = '';
+                            }, 1000);
+                        }
+                        if (!newEmail) {
+                            document.getElementById('newEmail').style.borderColor = '#ff4757';
+                            setTimeout(() => {
+                                document.getElementById('newEmail').style.borderColor = '';
+                            }, 1000);
+                        }
+                        if (!newPassword) {
+                            document.getElementById('newPassword').style.borderColor = '#ff4757';
+                            setTimeout(() => {
+                                document.getElementById('newPassword').style.borderColor = '';
+                            }, 1000);
+                        }
+                        return;
+                    }
+                    
+                    // Simulate account creation
+                    createAccountSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                    createAccountSubmitBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        // Show success
+                        createAccountModal.classList.remove('active');
+                        createAccountSubmitBtn.innerHTML = 'Create Account';
+                        createAccountSubmitBtn.disabled = false;
+                        
+                        // Clear form
+                        document.getElementById('fullName').value = '';
+                        document.getElementById('newEmail').value = '';
+                        document.getElementById('newPassword').value = '';
+                        
+                        showNotification('Account created successfully! Welcome to Money Manager.', 'success');
+                    }, 1500);
+                });
+                
+                // Close modals when clicking outside
+                window.addEventListener('click', function(event) {
+                    if (event.target === forgotPasswordModal) {
+                        forgotPasswordModal.classList.remove('active');
+                    }
+                    if (event.target === createAccountModal) {
+                        createAccountModal.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Utility function for notifications
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? 'linear-gradient(145deg, #2ed573 0%, #1dd1a1 100%)' : 'linear-gradient(145deg, #ff4757 0%, #ff3838 100%)'};
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+                    z-index: 10000;
+                    font-weight: 500;
+                    max-width: 300px;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                
+                // Add animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                        document.head.removeChild(style);
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Initialize all setups
+            setupMobileAnimation();
+            setupDesktopAnimation();
+            setupGlobalModals();
+            
+            // Add input focus effects
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.querySelector('i').style.color = '#0596D7';
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.querySelector('i').style.color = '#aaa';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

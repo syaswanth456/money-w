@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Money Manager - Transfer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="/transfer/transfer.css">
+    <!-- EXTERNAL JS (defer) -->
+    <script src="/transfer/transfer.js" defer></script>
+    <link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#6366f1" />
+
+</head>
+<body>
+    <!-- Mobile App Container -->
+    <div class="mobile-app" id="mobileView">
+        <!-- Page Header -->
+        <header class="page-header">
+            <button class="back-btn" id="backBtn" type="button" data-nav="dashboard">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="page-title">Transfer</div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="mobile-main-content">
+            <!-- Amount Input -->
+            <div class="amount-input-section">
+                <label class="amount-label">Amount</label>
+                <input type="text" class="amount-input" id="amountInput" placeholder="0.00" inputmode="decimal">
+            </div>
+
+            <!-- Transaction Type Selector -->
+            <div class="transaction-type-selector">
+                <div class="type-option selected" data-type="transfer">Transfer</div>
+                <div class="type-option" data-type="deposit">Deposit</div>
+                <div class="type-option" data-type="withdraw">Withdraw</div>
+            </div>
+
+            <!-- Date & Time -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="far fa-calendar"></i>
+                    <span>Date & Time</span>
+                </div>
+                <button class="section-content" id="dateTimeSection">
+                    <div class="content-value" id="dateTimeValue">
+                        <div>Today</div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </button>
+                <div class="repeat-indicator" id="repeatIndicator" style="display: none;">
+                    <i class="fas fa-redo"></i>
+                    <span>Every month</span>
+                </div>
+            </div>
+
+            <!-- Repeat/Installment -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="fas fa-redo"></i>
+                    <span>Repeat / Installment</span>
+                </div>
+                <button class="section-content" id="repeatSection">
+                    <div class="content-placeholder" id="repeatValue">
+                        <span>None</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </button>
+            </div>
+
+            <!-- From Account -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="fas fa-wallet"></i>
+                    <span>From Account</span>
+                </div>
+                <button class="section-content" id="fromAccountSection">
+                    <div class="account-row">
+                        <div class="account-direction">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="account-content">
+                            <div class="account-label">From</div>
+                            <div class="content-placeholder" id="fromAccountValue">
+                                <span>Select account</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- To Account -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="fas fa-wallet"></i>
+                    <span>To Account</span>
+                </div>
+                <button class="section-content" id="toAccountSection">
+                    <div class="account-row">
+                        <div class="account-direction">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="account-content">
+                            <div class="account-label">To</div>
+                            <div class="content-placeholder" id="toAccountValue">
+                                <span>Select account</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Note -->
+            <div class="form-section note-section">
+                <div class="section-label">
+                    <i class="far fa-sticky-note"></i>
+                    <span>Note (Optional)</span>
+                </div>
+                <textarea class="note-input" id="noteInput" placeholder="Add a note..."></textarea>
+            </div>
+
+            <!-- Save Button -->
+            <div class="save-btn-section">
+                <button class="save-btn" id="saveBtn" disabled>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Complete Transfer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Popup -->
+    <div class="modal-overlay" id="accountPopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="accountPopupTitle">Select Account</div>
+                <button class="modal-close" id="accountPopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="account-list" id="accountList">
+                <!-- Accounts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Time Popup -->
+    <div class="modal-overlay" id="datetimePopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Select Date & Time</div>
+                <button class="modal-close" id="datetimePopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="datetime-popup">
+                <div class="date-picker">
+                    <div class="calendar-header">
+                        <div class="calendar-month" id="calendarMonth">February 2026</div>
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" id="prevMonthBtn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="calendar-nav-btn" id="nextMonthBtn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated by JavaScript -->
+                    </div>
+                </div>
+                <div class="time-picker">
+                    <input type="text" class="time-input" id="hourInput" value="16" maxlength="2">
+                    <div class="time-separator">:</div>
+                    <input type="text" class="time-input" id="minuteInput" value="30" maxlength="2">
+                    <select class="time-input" id="ampmInput" style="width: 60px;">
+                        <option value="AM">AM</option>
+                        <option value="PM" selected>PM</option>
+                    </select>
+                </div>
+                <div class="datetime-actions">
+                    <button class="datetime-btn secondary" id="datetimeCancelBtn">Cancel</button>
+                    <button class="datetime-btn primary" id="datetimeConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Repeat Popup -->
+    <div class="modal-overlay" id="repeatPopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Repeat / Installment</div>
+                <button class="modal-close" id="repeatPopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="repeat-popup">
+                <div class="repeat-option" data-type="none">None</div>
+                <div class="repeat-option" data-type="installment">Installment</div>
+                <div class="repeat-option" data-type="daily">Every day</div>
+                <div class="repeat-option" data-type="weekdays">Weekdays</div>
+                <div class="repeat-option" data-type="biweekly">Every 2 weeks</div>
+                <div class="repeat-option" data-type="monthly">Every month</div>
+                <div class="repeat-option" data-type="endofmonth">End of the month</div>
+                <div class="repeat-option" data-type="bimonthly">Every 2 months</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Installment Popup -->
+    <div class="modal-overlay" id="installmentPopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="back-btn" id="installmentBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="modal-title">Installment</div>
+                <button class="modal-close" id="installmentPopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="installment-popup">
+                <input type="text" class="installment-input" id="installmentMonths" value="12" maxlength="2">
+                <div class="installment-note">
+                    This transaction will run monthly for <span id="installmentCount">12</span> months
+                </div>
+                <div class="datetime-actions">
+                    <button class="datetime-btn secondary" id="installmentCancelBtn">Cancel</button>
+                    <button class="datetime-btn primary" id="installmentConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="action-toast" id="actionToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Transfer completed successfully!</span>
+        </div>
+    </div>
+</body>
+</html>
+
+

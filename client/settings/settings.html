@@ -1,0 +1,754 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Money Manager - Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="/settings/settings.css">
+    <!-- EXTERNAL JS (defer) -->
+    <script src="/settings/settings.js" defer></script>
+    <link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#6366f1" />
+
+</head>
+<body>
+    <!-- Mobile App Container -->
+    <div class="mobile-app" id="mobileView">
+        <!-- Settings Page -->
+        <div class="settings-page">
+            <div class="page-header">
+                <!-- Back button secured with data-nav -->
+                <button class="back-btn" id="backBtn" data-nav="dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="page-title">Settings</div>
+            </div>
+
+            <div class="mobile-main-content">
+                <!-- User Profile Section -->
+                <div class="user-profile-section glass-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <!-- Avatar replaced with icon -->
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h3>User Name</h3>
+                            <p>Member</p>
+                        </div>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statsAccounts">0</div>
+                            <div class="stat-label">Accounts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statsTransactions">0</div>
+                            <div class="stat-label">Transactions</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statsCategories">0</div>
+                            <div class="stat-label">Categories</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Sections -->
+                <div class="settings-sections">
+                    <!-- Account Settings -->
+                    <div class="settings-section">
+                        <div class="section-title">Account</div>
+                        <div class="settings-list">
+                            <div class="setting-item glass-card" data-setting="profile">
+                                <div class="setting-info">
+                                    <div class="setting-icon account">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Profile Information</div>
+                                        <div class="setting-description">Update your personal details</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="currency">
+                                <div class="setting-info">
+                                    <div class="setting-icon currency">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Currency</div>
+                                        <div class="setting-description">USD - United States Dollar</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="language">
+                                <div class="setting-info">
+                                    <div class="setting-icon account">
+                                        <i class="fas fa-language"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Language</div>
+                                        <div class="setting-description">English (United States)</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security & Privacy -->
+                    <div class="settings-section">
+                        <div class="section-title">Security & Privacy</div>
+                        <div class="settings-list">
+                            <div class="setting-item glass-card" data-setting="security">
+                                <div class="setting-info">
+                                    <div class="setting-icon security">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Security Settings</div>
+                                        <div class="setting-description">Password, PIN, biometrics</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="privacy">
+                                <div class="setting-info">
+                                    <div class="setting-icon security">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Privacy</div>
+                                        <div class="setting-description">Data sharing preferences</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="backup">
+                                <div class="setting-info">
+                                    <div class="setting-icon backup">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Backup & Sync</div>
+                                        <div class="setting-description">Auto backup to cloud</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="settings-section">
+                        <div class="section-title">Notifications</div>
+                        <div class="settings-list">
+                            <div class="setting-item glass-card" data-setting="notifications">
+                                <div class="setting-info">
+                                    <div class="setting-icon notifications">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Push Notifications</div>
+                                        <div class="setting-description">Receive app notifications</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="email">
+                                <div class="setting-info">
+                                    <div class="setting-icon notifications">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Email Notifications</div>
+                                        <div class="setting-description">Weekly reports and alerts</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="reminders">
+                                <div class="setting-info">
+                                    <div class="setting-icon notifications">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Bill Reminders</div>
+                                        <div class="setting-description">Get notified before due dates</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance -->
+                    <div class="settings-section">
+                        <div class="section-title">Appearance</div>
+                        <div class="settings-list">
+                            <div class="setting-item glass-card" data-setting="theme">
+                                <div class="setting-info">
+                                    <div class="setting-icon appearance">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Theme</div>
+                                        <div class="setting-description">Light mode</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="font">
+                                <div class="setting-info">
+                                    <div class="setting-icon appearance">
+                                        <i class="fas fa-font"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Font Size</div>
+                                        <div class="setting-description">Medium</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="charts">
+                                <div class="setting-info">
+                                    <div class="setting-icon appearance">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Charts & Graphs</div>
+                                        <div class="setting-description">Visual preferences</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Management -->
+                    <div class="settings-section">
+                        <div class="section-title">Data Management</div>
+                        <div class="glass-card" style="padding: 12px 14px; margin-bottom: 10px; border: 1px solid rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.08);">
+                            <div style="font-size: 0.8rem; color: var(--danger-red); font-weight: 700;">Clear Data Protection</div>
+                            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px;">To clear database records, you must enter <strong>CLEAR</strong> on the confirmation prompt.</div>
+                        </div>
+                        <div class="settings-list">
+                            <div class="setting-item glass-card" data-setting="export">
+                                <div class="setting-info">
+                                    <div class="setting-icon export">
+                                        <i class="fas fa-file-export"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Export Data</div>
+                                        <div class="setting-description">Structured JSON backup package</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="import">
+                                <div class="setting-info">
+                                    <div class="setting-icon export">
+                                        <i class="fas fa-file-import"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Import Data</div>
+                                        <div class="setting-description">Restore backup and replace existing data</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="clear">
+                                <div class="setting-info">
+                                    <div class="setting-icon export">
+                                        <i class="fas fa-trash"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Clear Data</div>
+                                        <div class="setting-description">Delete all app data</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About & Support -->
+                    <div class="settings-section">
+                        <div class="section-title">About & Support</div>
+                        <div class="settings-list">
+                            <div class="setting-item glass-card" data-setting="about">
+                                <div class="setting-info">
+                                    <div class="setting-icon about">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">About App</div>
+                                        <div class="setting-description">Version 2.1.0 (Build 210)</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="help">
+                                <div class="setting-info">
+                                    <div class="setting-icon about">
+                                        <i class="fas fa-question-circle"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Help & Support</div>
+                                        <div class="setting-description">FAQs and contact</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div class="setting-item glass-card" data-setting="rate">
+                                <div class="setting-info">
+                                    <div class="setting-icon about">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="setting-details">
+                                        <div class="setting-name">Rate App</div>
+                                        <div class="setting-description">Share your feedback</div>
+                                    </div>
+                                </div>
+                                <div class="setting-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <div class="settings-section">
+                        <button class="logout-btn glass-card" id="logoutBtn" style="width: 100%; padding: 16px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 16px; color: var(--danger-red); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Log Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation (secured) -->
+        <nav class="mobile-bottom-nav">
+            <a href="#" class="nav-item" data-nav="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="accounts">
+                <i class="fas fa-wallet"></i>
+                <span>Accounts</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="categories">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="#" class="nav-item active" data-nav="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editProfileModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="editProfileModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Edit Profile</h3>
+            <form class="edit-form" id="editProfileForm">
+                <div class="form-group">
+                    <label for="editProfileName">Full Name</label>
+                    <input type="text" id="editProfileName" required value="User Name">
+                </div>
+                <div class="form-group">
+                    <label for="editProfileEmail">Email Address</label>
+                    <input type="email" id="editProfileEmail" required value="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="editProfilePhone">Phone Number</label>
+                    <input type="tel" id="editProfilePhone" value="+1 (555) 123-4567">
+                </div>
+                <div class="form-group">
+                    <label for="editProfileCurrency">Default Currency</label>
+                    <select id="editProfileCurrency">
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="USD" selected>USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    <span>Save Changes</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="currencyModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="currencyModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Currency</h3>
+            <form class="edit-form" id="currencyForm">
+                <div class="form-group">
+                    <label for="currencySelect">Preferred Currency</label>
+                    <select id="currencySelect">
+                        <option value="INR">INR - Indian Rupee</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    <span>Save Currency</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="languageModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="languageModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Language</h3>
+            <p style="text-align:center;color:var(--text-secondary);margin-bottom:16px;">
+                Multi-language support is coming soon.
+            </p>
+            <button type="button" class="submit-btn" data-close-modal="languageModal">
+                <i class="fas fa-check"></i>
+                <span>OK</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="securityModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="securityModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Security Settings</h3>
+            <form class="edit-form" id="securityForm">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" placeholder="Minimum 6 characters">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter new password">
+                </div>
+                <div class="form-group">
+                    <label>Security Locks</label>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-details">
+                                    <div class="setting-name">Pattern Lock</div>
+                                </div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="securityPatternToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-details">
+                                    <div class="setting-name">Biometric Lock</div>
+                                </div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="securityBiometricToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-details">
+                                    <div class="setting-name">Face Lock</div>
+                                </div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="securityFaceToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-details">
+                                    <div class="setting-name">Windows Hello Lock</div>
+                                </div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="securityWindowsHelloToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-details">
+                                    <div class="setting-name">Android Device Lock</div>
+                                </div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="securityAndroidLockToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lockPin">App Lock Passcode (4-8 digits)</label>
+                    <input type="password" id="lockPin" inputmode="numeric" pattern="\d*" maxlength="8" placeholder="Set passcode for app unlock">
+                </div>
+                <div class="form-group">
+                    <label for="confirmLockPin">Confirm App Lock Passcode</label>
+                    <input type="password" id="confirmLockPin" inputmode="numeric" pattern="\d*" maxlength="8" placeholder="Re-enter passcode">
+                    <div id="securityPasskeyHint" style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 6px;">Enable Biometric/Face to use device lock (passkey) at app open.</div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Save Security</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="privacyModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="privacyModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Privacy Preferences</h3>
+            <form class="edit-form" id="privacyForm">
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-details">
+                                <div class="setting-name">Share Dashboard Summary</div>
+                            </div>
+                        </div>
+                        <div class="setting-action">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="privacyDashboardToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-details">
+                                <div class="setting-name">Share Accounts</div>
+                            </div>
+                        </div>
+                        <div class="setting-action">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="privacyAccountsToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-details">
+                                <div class="setting-name">Share Transactions</div>
+                            </div>
+                        </div>
+                        <div class="setting-action">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="privacyTransactionsToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-lock"></i>
+                    <span>Save Privacy</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="themeModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="themeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Theme</h3>
+            <form class="edit-form" id="themeForm">
+                <div class="form-group">
+                    <label for="themeSelect">Theme</label>
+                    <select id="themeSelect">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="system">System</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-palette"></i>
+                    <span>Save Theme</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="fontModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="fontModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Font Size</h3>
+            <form class="edit-form" id="fontForm">
+                <div class="form-group">
+                    <label for="fontSelect">Font Size</label>
+                    <select id="fontSelect">
+                        <option value="small">Small</option>
+                        <option value="medium">Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-font"></i>
+                    <span>Save Font Size</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="chartsModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" data-close-modal="chartsModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Charts & Graphics</h3>
+            <form class="edit-form" id="chartsForm">
+                <div class="form-group">
+                    <label for="chartsSelect">Charts & Graphics</label>
+                    <select id="chartsSelect">
+                        <option value="compact">Compact</option>
+                        <option value="balanced">Balanced</option>
+                        <option value="detailed">Detailed</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Save Charts</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="clearDataWizardModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card compact-modal">
+            <button class="modal-close" id="clearDataWizardClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Clear Data</h3>
+            <div id="clearDataWizardBody"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="comingSoonModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card compact-modal">
+            <button class="modal-close" id="comingSoonClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title" id="comingSoonTitle">Coming Soon</h3>
+            <p style="text-align:center;color:var(--text-secondary);margin:8px 0 16px;" id="comingSoonMessage">This section is under development.</p>
+            <button type="button" class="submit-btn" id="comingSoonOk">
+                <i class="fas fa-check"></i>
+                <span>OK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="action-toast" id="actionToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Action completed successfully!</span>
+        </div>
+    </div>
+</body>
+</html>
+
+

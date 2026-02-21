@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Money Manager - Categories</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="/categories/categories.css">
+    <!-- EXTERNAL JS (defer) -->
+    <script src="/categories/categories.js" defer></script>
+</head>
+<body>
+    <!-- Mobile App Container -->
+    <div class="mobile-app" id="mobileView">
+        <!-- Categories Management Page -->
+        <div class="categories-page">
+            <div class="page-header">
+                <!-- Back button secured with data-nav -->
+                <a href="#" class="back-btn" data-nav="dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="page-title">Manage Categories</div>
+                <div class="page-actions">
+                    <button class="page-action-btn" id="addCategoryBtn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="categories-tabs">
+                <button class="category-tab active" data-type="expense">
+                    Expense Categories
+                </button>
+                <button class="category-tab" data-type="income">
+                    Income Categories
+                </button>
+            </div>
+
+            <div class="categories-container">
+                <div class="category-list" id="expenseCategoriesList">
+                    <!-- Expense categories will be loaded here -->
+                </div>
+                
+                <div class="category-list" id="incomeCategoriesList" style="display: none;">
+                    <!-- Income categories will be loaded here -->
+                </div>
+            </div>
+
+            <div class="add-category-form" id="addCategoryForm" style="display: none;">
+                <h3>Add New Category</h3>
+                <div class="form-row">
+                    <input type="text" id="newCategoryName" placeholder="Category name">
+                </div>
+                <div class="form-row">
+                    <input type="text" id="newCategoryIcon" placeholder="Icon (e.g., shopping-cart)">
+                </div>
+                <div class="icon-picker" id="categoryIconPicker"></div>
+                <button class="add-btn" id="saveCategoryBtn">Add Category</button>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation (secured) -->
+        <nav class="mobile-bottom-nav">
+            <a href="#" class="nav-item" data-nav="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="accounts">
+                <i class="fas fa-wallet"></i>
+                <span>Accounts</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="nav-item active" data-nav="categories">
+                <i class="fas fa-tags"></i>
+                <span>Categories</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Edit Category Modal -->
+    <div class="modal-overlay" id="editCategoryModal">
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="editCategoryModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Edit Category</h3>
+            <form class="edit-form" id="editCategoryForm">
+                <div class="form-group">
+                    <label for="editCategoryName">Category Name</label>
+                    <input type="text" id="editCategoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCategoryIcon">Icon</label>
+                    <input type="text" id="editCategoryIcon" placeholder="fas fa-icon-name">
+                </div>
+                <div class="icon-picker" id="editCategoryIconPicker"></div>
+                <div class="form-group">
+                    <label for="editCategoryType">Move to Category Type</label>
+                    <select id="editCategoryType">
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    <span>Save Changes</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="subcategoryManagerModal" role="dialog" aria-hidden="true">
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="subcategoryManagerClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title" id="subcategoryManagerTitle">Subcategories</h3>
+            <div class="form-row">
+                <input type="text" id="newSubcategoryName" placeholder="Subcategory name">
+            </div>
+            <div class="form-row">
+                <input type="text" id="newSubcategoryIcon" placeholder="Icon (e.g., receipt)">
+            </div>
+            <div class="icon-picker" id="subcategoryIconPicker"></div>
+            <button class="add-btn" id="saveSubcategoryBtn">Add Subcategory</button>
+            <div class="subcategories-container" id="subcategoryManagerList" style="display:block;margin-top:12px;"></div>
+        </div>
+    </div>
+
+    <!-- Edit Subcategory Modal -->
+    <div class="modal-overlay" id="editSubcategoryModal">
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="editSubcategoryModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="modal-title">Edit Subcategory</h3>
+            <form class="edit-form" id="editSubcategoryForm">
+                <div class="form-group">
+                    <label for="editSubcategoryName">Subcategory Name</label>
+                    <input type="text" id="editSubcategoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSubcategoryParent">Move to Category</label>
+                    <select id="editSubcategoryParent">
+                        <!-- Categories will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editSubcategoryType">Move to Category Type</label>
+                    <select id="editSubcategoryType">
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    <span>Save Changes</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="action-toast" id="actionToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Action completed successfully!</span>
+        </div>
+    </div>
+</body>
+</html>
+
+

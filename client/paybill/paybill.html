@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <script src="/shared/appearance.js"></script>
+    <title>Money Manager - Pay Bill</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="/paybill/paybill.css">
+    <!-- EXTERNAL JS (defer) -->
+    <script src="/paybill/paybill.js" defer></script>
+    <link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#6366f1" />
+
+</head>
+<body>
+    <!-- Mobile App Container -->
+    <div class="mobile-app" id="mobileView">
+        <!-- Page Header -->
+        <header class="page-header">
+            <!-- Back button secured with data-nav -->
+            <a href="#" class="back-btn" id="backBtn" data-nav="dashboard">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="page-title">Pay Bill</div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="mobile-main-content">
+            <!-- Amount Input -->
+            <div class="amount-input-section">
+                <label class="amount-label">Amount</label>
+                <input type="text" class="amount-input" id="amountInput" placeholder="0.00" inputmode="decimal">
+            </div>
+
+            <!-- Bill Category -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="fas fa-tag"></i>
+                    <span>Bill Category</span>
+                </div>
+                <button class="section-content" id="categorySection">
+                    <div class="content-placeholder" id="categoryValue">
+                        <span>Select category</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Provider/Biller Name -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="fas fa-building"></i>
+                    <span>Provider / Biller Name</span>
+                </div>
+                <input type="text" class="text-input" id="providerInput" placeholder="e.g., Comcast, PG&E, Verizon">
+            </div>
+
+            <!-- Account -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="fas fa-wallet"></i>
+                    <span>Account</span>
+                </div>
+                <button class="section-content" id="accountSection">
+                    <div class="content-placeholder" id="accountValue">
+                        <span>Select account</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Due Date -->
+            <div class="form-section">
+                <div class="section-label">
+                    <i class="far fa-calendar"></i>
+                    <span>Due Date (Optional)</span>
+                </div>
+                <button class="section-content" id="dueDateSection">
+                    <div class="content-placeholder" id="dueDateValue">
+                        <span>Select date</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Note -->
+            <div class="form-section note-section">
+                <div class="section-label">
+                    <i class="far fa-sticky-note"></i>
+                    <span>Note (Optional)</span>
+                </div>
+                <textarea class="note-input" id="noteInput" placeholder="Add a note..."></textarea>
+            </div>
+
+            <!-- Save Button -->
+            <div class="save-btn-section">
+                <button class="save-btn" id="saveBtn" disabled>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Pay Bill</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Popup -->
+    <div class="modal-overlay" id="categoryPopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Select Bill Category</div>
+                <button class="modal-close" id="categoryPopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="category-list" id="categoryList">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Popup -->
+    <div class="modal-overlay" id="accountPopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Select Account</div>
+                <button class="modal-close" id="accountPopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="account-list" id="accountList">
+                <!-- Accounts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Due Date Popup -->
+    <div class="modal-overlay" id="dueDatePopup" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Select Due Date</div>
+                <button class="modal-close" id="dueDatePopupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="datetime-popup">
+                <div class="date-picker">
+                    <div class="calendar-header">
+                        <div class="calendar-month" id="calendarMonth">February 2026</div>
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" id="prevMonthBtn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="calendar-nav-btn" id="nextMonthBtn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated by JavaScript -->
+                    </div>
+                </div>
+                <div class="datetime-actions">
+                    <button class="datetime-btn secondary" id="dueDateCancelBtn">Cancel</button>
+                    <button class="datetime-btn primary" id="dueDateConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="action-toast" id="actionToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Bill payment saved successfully!</span>
+        </div>
+    </div>
+</body>
+</html>
+
+
